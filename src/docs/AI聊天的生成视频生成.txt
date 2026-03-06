@@ -1,0 +1,89 @@
+# 1. 文生视频消息流
+
+## 链接
+
+```http
+/api/ws/chat
+```
+
+## 发送消息
+
+```json
+{
+    "type": "message",
+    "content": "给我发一个你在大海边散步的视频"
+}
+```
+
+## 任务开始
+
+```json
+{
+	"type": "text_to_video_start",
+	"content": {
+		"message": "🎬 队列等待中.."
+	},
+	"sender_id": null,
+	"recipient_id": null,
+	"timestamp": "2025-09-19T21:12:12.440729"
+}
+```
+
+## 生成进度
+
+```json
+{
+	"type": "text_to_video_progress",
+	"content": {
+		"message": "🎬 57.1%",
+		"video_url": null
+	},
+	"sender_id": null,
+	"recipient_id": null,
+	"timestamp": "2025-09-19T21:12:46.057648"
+}
+```
+
+## 生成完成确认消息
+
+```json
+{
+	"type": "text_to_video_complete",
+	"content": {
+		"success": true,
+		"message": "1/1",
+		"file_type": "VIDEO",
+		"video_url": "21ecc0c0-e2e8-45b6-a55c-94488cf6b066",
+		"file_id": ""
+	},
+	"sender_id": null,
+	"recipient_id": null,
+	"timestamp": "2025-09-19T22:35:05.607536"
+}
+```
+
+## 文生视频错误
+
+```json
+{
+    "message_type": "text_to_video_error",
+    "content": {
+        "message": "❌ 图像匹配失败，请稍后重试或升级VIP",
+        "image_url": None,
+        "success": False
+    }
+}
+```
+
+## 全局错误
+
+```json
+{
+    "message_type": "error",
+    "content": {
+        "message": "❌ 图像匹配失败，请稍后重试或升级VIP",
+        "image_url": None,
+        "success": False
+    }
+}
+```

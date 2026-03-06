@@ -1,0 +1,56 @@
+# 1. 文字聊天
+## 链接
+
+```http
+/api/ws/chat
+```
+## 消息开始
+
+```json
+{
+    "message_type": "text_start",
+    "content":{
+        "message": "🔍 正在生成...",
+        "image_url": None
+    }
+}
+```
+
+## 消息块
+
+```json
+{
+    "message_type": "text_progress",
+    "content":{
+        "message": status,
+        "image_url": file_id
+    }
+}
+```
+
+## 消息确认消息
+
+```json
+{
+    "message_type": "text_complete",
+    "content":{
+        "success": True,
+        "message": file_id,
+        "image_url": file_id,
+        "conversation_id": None
+    }
+}
+```
+
+## 错误信息
+
+```json
+{
+    "message_type": "text_error",
+    "content": {
+        "message": "❌ 图像匹配失败，请稍后重试或升级VIP",
+        "image_url": None,
+        "success": False
+    }
+}
+```

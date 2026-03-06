@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "ask": [
+      "Read(!/mnt/d/前端/AI-chat/**)",
+      "Edit(!/mnt/d/前端/AI-chat/**)"
+    ],
+    "allow": [
+      "Read(/mnt/d/前端/AI-chat/**)",
+      "Edit(/mnt/d/前端/AI-chat/**)"
+    ]
+  },
+  "memoryImport": {},
+  "monitoring": {}
+}

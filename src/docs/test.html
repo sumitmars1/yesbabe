@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HLS视频播放测试</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+    <style>
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+            margin: 0;
+            background: #0f172a;
+            color: #e2e8f0
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px
+        }
+
+        .card {
+            background: #0b1220;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px
+        }
+
+        .row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap
+        }
+
+        .col {
+            flex: 1 1 300px
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #94a3b8
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            background: #0b1220;
+            color: #e2e8f0
+        }
+
+        button {
+            padding: 10px 16px;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            background: #111827;
+            color: #e5e7eb;
+            cursor: pointer;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            transition: all .15s;
+            font-size: 14px
+        }
+
+        button:hover {
+            background: #1e293b
+        }
+
+        button.primary {
+            background: #2563eb;
+            border-color: #3b82f6
+        }
+
+        button.primary:hover {
+            background: #1d4ed8
+        }
+
+        button.secondary {
+            background: #4b5563;
+            border-color: #6b7280
+        }
+
+        button.secondary:hover {
+            background: #374151
+        }
+
+        button.danger {
+            background: #dc2626;
+            border-color: #ef4444
+        }
+
+        button.danger:hover {
+            background: #b91c1c
+        }
+
+        .log {
+            white-space: pre-wrap;
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 12px;
+            height: 280px;
+            overflow: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 12px;
+            line-height: 1.6
+        }
+
+        video {
+            width: 100%;
+            max-height: 500px;
+            background: #000;
+            border-radius: 12px
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600
+        }
+
+        .badge.idle {
+            color: #94a3b8;
+            background: #1e293b
+        }
+
+        .badge.success {
+            color: #4ade80;
+            background: rgba(34, 197, 94, 0.15)
+        }
+
+        .badge.error {
+            color: #f87171;
+            background: rgba(239, 68, 68, 0.15)
+        }
+
+        .badge.warning {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.15)
+        }
+
+        .badge.playing {
+            color: #60a5fa;
+            background: rgba(96, 165, 250, 0.15)
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+            margin-top: 12px
+        }
+
+        .info-item {
+            background: #111827;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #1e293b
+        }
+
+        .info-label {
+            font-size: 10px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px
+        }
+
+        .info-value {
+            font-size: 13px;
+            color: #e2e8f0;
+            margin-top: 3px;
+            font-weight: 500;
+            word-break: break-all
+        }
+
+        .info-value.mono {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 11px
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px
+        }
+
+        h2 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            flex-wrap: wrap
+        }
+
+        h3 {
+            margin: 0 0 12px 0;
+            font-size: 15px;
+            color: #94a3b8;
+            font-weight: 500
+        }
+
+        .divider {
+            height: 1px;
+            background: #1e293b;
+            margin: 16px 0
+        }
+
+        .sig-info {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 11px
+        }
+
+        .sig-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 4px;
+            flex-wrap: wrap
+        }
+
+        .sig-label {
+            color: #64748b;
+            min-width: 40px
+        }
+
+        .sig-value {
+            color: #4ade80
+        }
+
+        .sig-expired {
+            color: #f87171
+        }
+
+        .countdown {
+            font-size: 14px;
+            color: #fbbf24;
+            margin-left: auto
+        }
+
+        .countdown.expired {
+            color: #f87171
+        }
+
+        .tip {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 8px;
+            padding: 8px;
+            background: #111827;
+            border-radius: 6px;
+            border-left: 3px solid #3b82f6
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>
+        HLS视频播放测试
+        <span id="status" class="badge idle">待命</span>
+        <span id="countdown" class="countdown"></span>
+    </h2>
+
+    <div class="card">
+        <h3>配置</h3>
+        <div class="row">
+            <div class="col">
+                <label>视频UUID</label>
+                <input id="filename" placeholder="330eb866-d604-41c6-9f6a-134caeb46bbb">
+            </div>
+            <div class="col">
+                <label>JWT Token</label>
+                <input id="token" type="password" placeholder="粘贴JWT Token">
+            </div>
+        </div>
+        <div class="btn-group">
+            <button id="toggleToken">显示Token</button>
+            <button id="validateToken" class="primary">验证Token</button>
+            <button id="saveConfig">保存配置</button>
+        </div>
+        <div class="tip">
+            HLS签名有效期: <strong>1小时</strong> | 签名包含用户ID，无法分享给其他用户 | 已移除Cookie验证，仅支持URL签名
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>查询</h3>
+        <div class="btn-group">
+            <button id="checkInfo" class="primary">查询视频信息</button>
+            <button id="checkStatus">查询HLS状态</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3>播放</h3>
+        <div class="btn-group">
+            <button id="playHls" class="primary">播放HLS (CDN)</button>
+            <button id="playMp4" class="secondary">播放MP4 (直连)</button>
+            <button id="stopVideo" class="danger">停止</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3>跳转测试</h3>
+        <div class="btn-group">
+            <button id="seek10">+10s</button>
+            <button id="seek30">跳到30s</button>
+            <button id="seek60">跳到60s</button>
+            <button id="seekEnd">跳到末尾-5s</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>视频信息</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">HLS可用</div>
+                <div class="info-value" id="infoHlsAvailable">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">文件大小</div>
+                <div class="info-value" id="infoFileSize">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">HLS状态</div>
+                <div class="info-value" id="infoHlsStatus">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">合集ID</div>
+                <div class="info-value" id="infoCollectionId">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">当前模式</div>
+                <div class="info-value" id="infoCurrentMode">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">播放进度</div>
+                <div class="info-value" id="infoPlayProgress">-</div>
+            </div>
+        </div>
+
+        <div id="sigInfoContainer" style="display:none">
+            <h3 style="margin-top:16px">签名信息 (从m3u8解析)</h3>
+            <div class="sig-info">
+                <div class="sig-row"><span class="sig-label">sig:</span><span class="sig-value" id="sigValue">-</span>
+                </div>
+                <div class="sig-row"><span class="sig-label">exp:</span><span class="sig-value"
+                                                                              id="sigExp">-</span><span id="sigExpTime"
+                                                                                                        style="color:#64748b;margin-left:8px"></span>
+                </div>
+                <div class="sig-row"><span class="sig-label">uid:</span><span class="sig-value" id="sigUid">-</span>
+                </div>
+                <div class="sig-row"><span class="sig-label">cid:</span><span class="sig-value" id="sigCid">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden">
+        <video id="player" controls preload="metadata" playsinline></video>
+    </div>
+
+    <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <h3 style="margin:0">日志</h3>
+            <button id="clear" style="margin:0;padding:6px 12px;font-size:12px">清空</button>
+        </div>
+        <div class="log" id="log"></div>
+    </div>
+</div>
+
+<script>
+    const $ = id => document.getElementById(id);
+    let currentHls = null;
+    let signatureExpiry = null;
+    let countdownTimer = null;
+
+    const log = (m, type = 'info') => {
+        const l = $('log');
+        const t = new Date().toLocaleTimeString('zh-CN', {hour12: false});
+        const colors = {error: '#f87171', success: '#4ade80', warn: '#fbbf24', info: '#94a3b8', sig: '#a78bfa'};
+        const icons = {error: 'ERR', success: 'OK', warn: 'WARN', info: 'INFO', sig: 'SIG'};
+        l.innerHTML += '<span style="color:#475569">' + t + '</span> <span style="color:' + (colors[type] || colors.info) + '">[' + (icons[type] || 'INFO') + ']</span> ' + m + '\\n';
+        l.scrollTop = l.scrollHeight;
+    };
+
+    const setStatus = (s, type = 'idle') => {
+        const b = $('status');
+        b.textContent = s;
+        b.className = 'badge ' + type;
+    };
+
+    const updateInfo = (id, val) => {
+        $(id).textContent = val ?? '-';
+    };
+
+    function getToken() {
+        return $('token').value.trim();
+    }
+
+    function getFilename() {
+        return $('filename').value.trim();
+    }
+
+    // 解析签名参数
+    function parseSignatureFromUrl(url) {
+        try {
+            const params = new URL(url, window.location.origin).searchParams;
+            return {
+                sig: params.get('sig'),
+                exp: params.get('exp'),
+                uid: params.get('uid'),
+                cid: params.get('cid')
+            };
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // 更新签名信息显示
+    function updateSignatureInfo(sigParams) {
+        if (!sigParams || !sigParams.sig) {
+            $('sigInfoContainer').style.display = 'none';
+            return;
+        }
+
+        $('sigInfoContainer').style.display = 'block';
+        $('sigValue').textContent = sigParams.sig;
+        $('sigExp').textContent = sigParams.exp;
+        $('sigUid').textContent = sigParams.uid;
+        $('sigCid').textContent = sigParams.cid;
+
+        // 显示过期时间
+        if (sigParams.exp) {
+            const expDate = new Date(parseInt(sigParams.exp) * 1000);
+            $('sigExpTime').textContent = '(' + expDate.toLocaleString('zh-CN') + ')';
+            signatureExpiry = parseInt(sigParams.exp);
+            startCountdown();
+        }
+
+        log('签名参数: sig=' + sigParams.sig.substring(0, 8) + '..., uid=' + sigParams.uid + ', cid=' + sigParams.cid, 'sig');
+    }
+
+    // 签名过期倒计时
+    function startCountdown() {
+        if (countdownTimer) clearInterval(countdownTimer);
+
+        const updateCountdown = () => {
+            if (!signatureExpiry) return;
+            const now = Math.floor(Date.now() / 1000);
+            const remaining = signatureExpiry - now;
+            const el = $('countdown');
+
+            if (remaining <= 0) {
+                el.textContent = '签名已过期!';
+                el.className = 'countdown expired';
+                $('sigExp').className = 'sig-value sig-expired';
+                log('签名已过期，需要重新获取playlist', 'error');
+                clearInterval(countdownTimer);
+            } else {
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                el.textContent = '签名剩余: ' + mins + '分' + secs + '秒';
+                el.className = remaining < 300 ? 'countdown expired' : 'countdown';
+            }
+        };
+
+        updateCountdown();
+        countdownTimer = setInterval(updateCountdown, 1000);
+    }
+
+    // 配置
+    $('toggleToken').onclick = () => {
+        const inp = $('token');
+        const btn = $('toggleToken');
+        if (inp.type === 'password') {
+            inp.type = 'text';
+            btn.textContent = '隐藏Token';
+        } else {
+            inp.type = 'password';
+            btn.textContent = '显示Token';
+        }
+    };
+
+    $('validateToken').onclick = () => {
+        log('========== 验证JWT Token ==========');
+        validateToken();
+    };
+
+    $('saveConfig').onclick = () => {
+        localStorage.setItem('hls_test_config', JSON.stringify({filename: getFilename(), token: getToken()}));
+        log('配置已保存到localStorage', 'success');
+    };
+
+    window.onload = () => {
+        try {
+            const cfg = JSON.parse(localStorage.getItem('hls_test_config') || '{}');
+            if (cfg.filename) $('filename').value = cfg.filename;
+            if (cfg.token) $('token').value = cfg.token;
+            log('已加载保存的配置');
+            log('当前安全模式: URL签名验证 (已移除Cookie验证)', 'info');
+        } catch (e) {
+        }
+    };
+
+    // 解析JWT Token信息（不验证签名，仅解析payload）
+    function parseJwtPayload(token) {
+        try {
+            const parts = token.split('.');
+            if (parts.length !== 3) return null;
+            const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+            return payload;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // 验证Token有效性
+    function validateToken() {
+        const token = getToken();
+        if (!token) {
+            log('Token为空', 'error');
+            return false;
+        }
+
+        log('Token长度: ' + token.length + ' 字符');
+
+        const payload = parseJwtPayload(token);
+        if (!payload) {
+            log('Token格式无效 (无法解析JWT)', 'error');
+            return false;
+        }
+
+        log('Token解析成功:', 'success');
+        log('  用户ID (sub): ' + (payload.sub || payload.user_id || '-'));
+        if (payload.exp) {
+            const expDate = new Date(payload.exp * 1000);
+            const now = new Date();
+            const remaining = payload.exp - Math.floor(now.getTime() / 1000);
+            if (remaining <= 0) {
+                log('  过期时间: ' + expDate.toLocaleString('zh-CN') + ' (已过期!)', 'error');
+                return false;
+            } else {
+                const hours = Math.floor(remaining / 3600);
+                const mins = Math.floor((remaining % 3600) / 60);
+                log('  过期时间: ' + expDate.toLocaleString('zh-CN') + ' (剩余' + hours + '小时' + mins + '分)', 'success');
+            }
+        }
+        return true;
+    }
+
+    // 查询视频信息
+    $('checkInfo').onclick = async () => {
+        const filename = getFilename();
+        const token = getToken();
+        if (!filename) {
+            log('请填写视频UUID', 'error');
+            return;
+        }
+        if (!token) {
+            log('请填写JWT Token', 'error');
+            return;
+        }
+
+        // 先验证Token
+        if (!validateToken()) {
+            setStatus('Token无效', 'error');
+            return;
+        }
+
+        setStatus('查询中...', 'warning');
+        log('查询视频信息: ' + filename);
+
+        try {
+            const r = await fetch('/api/hls/video_info/' + filename + '?token=' + encodeURIComponent(token));
+
+            // 先检查HTTP状态码
+            if (!r.ok) {
+                const errText = await r.text();
+                let errMsg = 'HTTP ' + r.status;
+                try {
+                    const errJson = JSON.parse(errText);
+                    errMsg += ': ' + (errJson.message || errJson.detail || errText.substring(0, 100));
+                } catch (e) {
+                    errMsg += ': ' + errText.substring(0, 100);
+                }
+                log('查询失败: ' + errMsg, 'error');
+                if (r.status === 401) {
+                    log('401错误: Token无效或已过期，请重新获取Token', 'error');
+                } else if (r.status === 403) {
+                    log('403错误: 无权访问，可能未购买此合集', 'error');
+                } else if (r.status === 404) {
+                    log('404错误: 文件不存在', 'error');
+                }
+                setStatus('查询失败 (' + r.status + ')', 'error');
+                return;
+            }
+
+            const data = await r.json();
+
+            if (data.code === 200) {
+                const d = data.data;
+                updateInfo('infoHlsAvailable', d.hls_available ? 'YES' : 'NO');
+                updateInfo('infoFileSize', d.file_size_mb ? d.file_size_mb + ' MB' : '-');
+                updateInfo('infoCollectionId', d.collection_id || '-');
+
+                if (d.hls_status) {
+                    updateInfo('infoHlsStatus', d.hls_status.status + (d.hls_status.progress ? ' (' + d.hls_status.progress + '%)' : ''));
+                } else {
+                    updateInfo('infoHlsStatus', d.hls_available ? 'completed' : (d.needs_hls ? 'pending' : 'not_needed'));
+                }
+
+                log('HLS可用=' + d.hls_available + ', 大小=' + d.file_size_mb + 'MB, 合集ID=' + d.collection_id + ', 需要HLS=' + d.needs_hls, 'success');
+                setStatus('查询完成', 'success');
+            } else {
+                log('查询失败: ' + (data.message || 'code=' + data.code), 'error');
+                setStatus('查询失败', 'error');
+            }
+        } catch (e) {
+            log('请求异常: ' + e.message, 'error');
+            setStatus('异常', 'error');
+        }
+    };
+
+    // 查询HLS状态
+    $('checkStatus').onclick = async () => {
+        const filename = getFilename();
+        const token = getToken();
+        if (!filename || !token) {
+            log('请填写UUID和Token', 'error');
+            return;
+        }
+
+        log('查询HLS生成状态...');
+        try {
+            const r = await fetch('/api/hls/status/' + filename + '?token=' + encodeURIComponent(token));
+
+            if (!r.ok) {
+                const errText = await r.text();
+                let errMsg = 'HTTP ' + r.status;
+                try {
+                    const errJson = JSON.parse(errText);
+                    errMsg += ': ' + (errJson.message || errJson.detail || '');
+                } catch (e) {
+                }
+                log('查询失败: ' + errMsg, 'error');
+                return;
+            }
+
+            const data = await r.json();
+
+            if (data.code === 200) {
+                const d = data.data;
+                updateInfo('infoHlsStatus', d.status + (d.progress ? ' (' + d.progress + '%)' : ''));
+                updateInfo('infoHlsAvailable', d.hls_available ? 'YES' : 'NO');
+                log('状态=' + d.status + ', 进度=' + (d.progress || 0) + '%, HLS可用=' + d.hls_available + ', 需要HLS=' + d.needs_hls, 'success');
+                if (d.error) log('错误信息: ' + d.error, 'error');
+            } else {
+                log('查询失败: ' + (data.message || 'code=' + data.code), 'error');
+            }
+        } catch (e) {
+            log('请求异常: ' + e.message, 'error');
+        }
+    };
+
+    // 停止播放
+    function stopPlayback() {
+        const video = $('player');
+        if (currentHls) {
+            currentHls.destroy();
+            currentHls = null;
+            log('HLS实例已销毁');
+        }
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+        updateInfo('infoCurrentMode', '-');
+        updateInfo('infoPlayProgress', '-');
+        $('sigInfoContainer').style.display = 'none';
+        signatureExpiry = null;
+        if (countdownTimer) {
+            clearInterval(countdownTimer);
+            countdownTimer = null;
+        }
+        $('countdown').textContent = '';
+    }
+
+    // 播放HLS (CDN友好版本 - 仅URL签名验证)
+    $('playHls').onclick = async () => {
+        const filename = getFilename();
+        const token = getToken();
+        if (!filename || !token) {
+            log('请填写UUID和Token', 'error');
+            return;
+        }
+
+        stopPlayback();
+
+        // playlist请求使用query参数传递JWT token
+        const hlsUrl = '/api/hls/playlist/' + filename + '?token=' + encodeURIComponent(token);
+        log('========== 开始HLS播放 ==========');
+        log('认证方式: JWT Token (query参数)');
+        log('验证方式: URL签名 (已移除Cookie验证)');
+        log('签名有效期: 1小时');
+        log('Playlist: /api/hls/playlist/' + filename);
+        setStatus('加载HLS...', 'warning');
+        updateInfo('infoCurrentMode', 'HLS (CDN)');
+
+        const video = $('player');
+
+        if (!Hls.isSupported()) {
+            if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                log('使用Safari原生HLS支持');
+                video.src = hlsUrl;
+                video.play();
+            } else {
+                log('浏览器不支持HLS播放', 'error');
+                setStatus('不支持HLS', 'error');
+            }
+            return;
+        }
+
+        log('使用hls.js v' + Hls.version);
+
+        // CDN友好配置：segment URL已包含签名参数(sig/exp/uid/cid)
+        currentHls = new Hls({
+            debug: false,
+            enableWorker: true,
+            lowLatencyMode: false,
+            // segment请求无需额外认证，签名已在URL参数中
+            xhrSetup: (xhr, url) => {
+                // playlist请求需要token
+                if (url.includes('/playlist/')) {
+                    log('Playlist请求 (JWT认证)');
+                }
+            }
+        });
+
+        currentHls.loadSource(hlsUrl);
+        currentHls.attachMedia(video);
+
+        currentHls.on(Hls.Events.MANIFEST_PARSED, (e, data) => {
+            const frags = data.levels[0]?.details?.fragments?.length || '?';
+            log('Manifest解析成功, 分片数=' + frags, 'success');
+
+            // 从第一个segment URL解析签名参数
+            if (data.levels[0]?.details?.fragments?.[0]) {
+                const firstFrag = data.levels[0].details.fragments[0];
+                const fragUrl = firstFrag.url || firstFrag.relurl || '';
+                log('首个Segment URL: ' + fragUrl.substring(0, 80) + '...');
+
+                // 解析并显示签名信息
+                const sigParams = parseSignatureFromUrl(fragUrl);
+                updateSignatureInfo(sigParams);
+            }
+
+            video.play().then(() => {
+                setStatus('HLS播放中', 'playing');
+                log('开始播放', 'success');
+            }).catch(e => {
+                log('自动播放被阻止: ' + e.message + '，请手动点击播放', 'warn');
+                setStatus('点击播放', 'warning');
+            });
+        });
+
+        currentHls.on(Hls.Events.LEVEL_LOADED, (e, data) => {
+            const duration = data.details.totalduration.toFixed(1);
+            const fragCount = data.details.fragments.length;
+            log('Level加载完成: 时长=' + duration + 's, 分片=' + fragCount + '个');
+        });
+
+        currentHls.on(Hls.Events.FRAG_LOADING, (e, data) => {
+            const segName = (data.frag.relurl || '').split('?')[0].split('/').pop();
+            log('分片请求: ' + segName + ' (URL签名验证)', 'info');
+        });
+
+        currentHls.on(Hls.Events.FRAG_LOADED, (e, data) => {
+            const segName = (data.frag.relurl || '').split('?')[0].split('/').pop();
+            const duration = (data.frag.duration || 0).toFixed(1);
+            const size = data.frag.stats ? Math.round(data.frag.stats.total / 1024) : '?';
+            log('分片加载: ' + segName + ' (' + duration + 's, ' + size + 'KB)', 'success');
+        });
+
+        currentHls.on(Hls.Events.ERROR, (e, data) => {
+            const detail = data.details;
+            const httpCode = data.response?.code || '';
+            const errMsg = detail + (httpCode ? ' (HTTP ' + httpCode + ')' : '');
+
+            if (data.fatal) {
+                log('致命错误: ' + data.type + ' - ' + errMsg, 'error');
+                setStatus('播放错误', 'error');
+
+                // 特别处理403错误
+                if (httpCode === 403) {
+                    log('403错误可能原因: 签名过期/无效、未购买合集、用户ID不匹配', 'error');
+                }
+
+                if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+                    log('网络错误，3秒后尝试重新加载...', 'warn');
+                    setTimeout(() => currentHls && currentHls.startLoad(), 3000);
+                } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
+                    log('媒体错误，尝试恢复...', 'warn');
+                    currentHls.recoverMediaError();
+                }
+            } else {
+                log('非致命错误: ' + errMsg, 'warn');
+            }
+        });
+    };
+
+    // 播放MP4 (直连模式)
+    $('playMp4').onclick = () => {
+        const filename = getFilename();
+        const token = getToken();
+        if (!filename || !token) {
+            log('请填写UUID和Token', 'error');
+            return;
+        }
+
+        stopPlayback();
+
+        const mp4Url = '/api/gen_image/collection/?filename=' + encodeURIComponent(filename) + '&token=' + encodeURIComponent(token);
+        log('========== 开始MP4播放 ==========');
+        log('认证方式: JWT Token (query参数)');
+        log('验证方式: 后端直接验证购买记录');
+        log('MP4 URL: /api/gen_image/collection/?filename=' + filename);
+        setStatus('加载MP4...', 'warning');
+        updateInfo('infoCurrentMode', 'MP4 (直连)');
+
+        const video = $('player');
+        video.src = mp4Url;
+        video.load();
+        video.play().then(() => {
+            setStatus('MP4播放中', 'playing');
+            log('开始播放', 'success');
+        }).catch(e => {
+            log('自动播放被阻止: ' + e.message + '，请手动点击播放', 'warn');
+            setStatus('点击播放', 'warning');
+        });
+    };
+
+    $('stopVideo').onclick = () => {
+        stopPlayback();
+        log('播放已停止');
+        setStatus('已停止', 'idle');
+    };
+
+    // 跳转控制
+    $('seek10').onclick = () => {
+        const v = $('player');
+        if (!v.src) {
+            log('请先开始播放', 'warn');
+            return;
+        }
+        v.currentTime += 10;
+        log('快进10s -> ' + v.currentTime.toFixed(1) + 's');
+    };
+
+    $('seek30').onclick = () => {
+        const v = $('player');
+        if (!v.src) {
+            log('请先开始播放', 'warn');
+            return;
+        }
+        v.currentTime = 30;
+        log('跳转到30s');
+    };
+
+    $('seek60').onclick = () => {
+        const v = $('player');
+        if (!v.src) {
+            log('请先开始播放', 'warn');
+            return;
+        }
+        v.currentTime = 60;
+        log('跳转到60s');
+    };
+
+    $('seekEnd').onclick = () => {
+        const v = $('player');
+        if (!v.src || !v.duration) {
+            log('请先开始播放', 'warn');
+            return;
+        }
+        v.currentTime = Math.max(0, v.duration - 5);
+        log('跳转到末尾-5s: ' + v.currentTime.toFixed(1) + 's');
+    };
+
+    $('clear').onclick = () => {
+        $('log').innerHTML = '';
+        log('日志已清空');
+    };
+
+    // 视频事件监听
+    const v = $('player');
+    v.onloadedmetadata = () => log('视频元数据: 时长=' + v.duration.toFixed(1) + 's, 分辨率=' + v.videoWidth + 'x' + v.videoHeight);
+    v.onwaiting = () => log('缓冲中...');
+    v.onplaying = () => {
+        log('播放中');
+        setStatus($('infoCurrentMode').textContent + ' 播放中', 'playing');
+    };
+    v.onpause = () => log('已暂停');
+    v.onseeked = () => log('跳转完成: ' + v.currentTime.toFixed(1) + 's');
+    v.onended = () => {
+        log('播放结束', 'success');
+        setStatus('播放结束', 'success');
+    };
+    v.onerror = () => {
+        const e = v.error;
+        if (e) {
+            const codes = {
+                1: 'MEDIA_ERR_ABORTED',
+                2: 'MEDIA_ERR_NETWORK',
+                3: 'MEDIA_ERR_DECODE',
+                4: 'MEDIA_ERR_SRC_NOT_SUPPORTED'
+            };
+            log('视频错误: ' + (codes[e.code] || 'CODE_' + e.code) + ' - ' + (e.message || ''), 'error');
+        }
+    };
+    v.ontimeupdate = () => {
+        if (v.duration) {
+            const pct = (v.currentTime / v.duration * 100).toFixed(0);
+            updateInfo('infoPlayProgress', v.currentTime.toFixed(0) + 's / ' + v.duration.toFixed(0) + 's (' + pct + '%)');
+        }
+    };
+</script>
+</body>
+</html>

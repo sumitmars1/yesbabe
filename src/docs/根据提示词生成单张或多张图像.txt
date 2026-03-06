@@ -1,0 +1,137 @@
+
+# 1. 文生图消息流
+
+## 链接
+
+```http
+/api/ws/image
+```
+
+## 任务开始
+
+```json
+{
+	"type": "menu_text_to_image_start",
+	"data": {
+		"message": "🔍 队列排队中..",
+		"image_url": null
+	},
+	"timestamp": "2025-09-19T22:20:25.181635"
+}
+```
+
+## 生成进度
+
+```json
+{
+	"type": "menu_text_to_image_progress",
+	"data": {
+		"message": "🎨 40.0%",
+		"image_url": null
+	},
+	"timestamp": "2025-09-19T22:20:59.037118"
+}
+```
+
+## 生成完成确认消息
+
+### 单张图片
+
+```json
+{
+	"type": "menu_text_to_image_complete",
+	"data": {
+		"success": true,
+		"message": "1/1",
+		"image_url": "ba059c24-27c5-4b76-8ee0-53be344528e7_0",
+		"file_type": "IMAGE",
+		"batch_info": {
+			"current": 1,
+			"total": 1,
+			"is_last": true
+		}
+	},
+	"timestamp": "2025-09-19T22:22:03.943616"
+}
+```
+
+## 多张图片
+
+```json
+{
+	"type": "menu_text_to_image_complete",
+	"data": {
+		"message": "1/4",
+		"image_url": "b9909c6a-e04a-428b-a483-4189a6a3005f_0",
+		"file_type": "IMAGE",
+		"success": true,
+		"batch_info": {
+			"current": 1,
+			"total": 4,
+			"is_last": false
+		}
+	},
+	"timestamp": "2025-09-19T22:25:19.244304"
+}
+
+
+{
+	"type": "menu_text_to_image_complete",
+	"data": {
+		"message": "2/4",
+		"image_url": "b9909c6a-e04a-428b-a483-4189a6a3005f_1",
+		"file_type": "IMAGE",
+		"success": true,
+		"batch_info": {
+			"current": 2,
+			"total": 4,
+			"is_last": false
+		}
+	},
+	"timestamp": "2025-09-19T22:25:19.244304"
+}
+   
+
+{
+	"type": "menu_text_to_image_complete",
+	"data": {
+		"message": "3/4",
+		"image_url": "b9909c6a-e04a-428b-a483-4189a6a3005f_2",
+		"file_type": "IMAGE",
+		"success": true,
+		"batch_info": {
+			"current": 3,
+			"total": 4,
+			"is_last": false
+		}
+	},
+	"timestamp": "2025-09-19T22:25:19.244304"
+}
+
+
+{
+	"type": "menu_text_to_image_complete",
+	"data": {
+		"message": "4/4",
+		"image_url": "b9909c6a-e04a-428b-a483-4189a6a3005f_3",
+		"file_type": "IMAGE",
+		"success": true,
+		"batch_info": {
+			"current": 4,
+			"total": 4,
+			"is_last": true
+		}
+	},
+	"timestamp": "2025-09-19T22:25:19.244304"
+}
+```
+
+## 错误
+
+```json
+{
+    "message_type": "menu_text_to_image_error",
+    "content":""
+}
+```
+

@@ -1,0 +1,71 @@
+# 1. 聊天框的文生图消息流
+
+## 链接
+
+```http
+/api/ws/chat
+```
+
+## 任务开始
+
+```json
+{
+	"type": "text_to_image_start",
+	"data": {
+		"message": "🔍 队列排队中..",
+		"image_url": null
+	},
+	"timestamp": "2025-09-19T22:13:19.083262"
+}
+```
+
+## 心跳消息
+
+```python
+{
+    "type": "ping",
+    "content": {
+    }
+}
+```
+
+## 生成进度
+
+```json
+{
+	"type": "text_to_image_progress",
+	"data": {
+		"message": "🎨 40.0%",
+		"image_url": null
+	},
+	"timestamp": "2025-09-19T22:13:55.233131"
+}
+```
+
+## 生成完成确认消息
+
+```json
+{
+	"type": "text_to_image_complete",
+	"data": {
+		"success": true,
+		"message": "1/1",
+		"image_url": "69826f31-672e-45de-8d24-526644fc7211_0",
+		"file_type": "IMAGE"
+	},
+	"timestamp": "2025-09-19T22:14:54.076247"
+}
+```
+
+## 错误
+
+```json
+{
+    "message_type": "text_to_image_error",
+    "content": {
+        "message": "❌ 图像匹配失败，请稍后重试或升级VIP",
+        "image_url": None,
+        "success": False
+    }
+}
+```

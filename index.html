@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-27L2VXKV8F"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-27L2VXKV8F");
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/src/assets/logo.png" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content"
+    />
+    <title>Yesbabe</title>
+  </head>
+  <script>
+    !(function (f, b, e, v, n, t, s) {
+      if (f.fbq) return;
+      n = f.fbq = function () {
+        n.callMethod
+          ? n.callMethod.apply(n, arguments)
+          : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n;
+      n.loaded = !0;
+      n.version = "2.0";
+      n.queue = [];
+      t = b.createElement(e);
+      t.async = !0;
+      t.src = v;
+      s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s);
+    })(
+      window,
+      document,
+      "script",
+      "https://connect.facebook.net/en_US/fbevents.js"
+    );
+    fbq("init", "1319713996883332");
+    fbq("track", "PageView");
+  </script>
+  <noscript
+    ><img
+      height="1"
+      width="1"
+      style="display: none"
+      src="https://www.facebook.com/tr?id=1319713996883332&ev=PageView&noscript=1"
+  /></noscript>
+  <body>
+    <!-- 地区检测白屏遮罩，优先级最高 -->
+    <div
+      id="region-check-overlay"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #ffffff;
+        z-index: 99999;
+      "
+    ></div>
+    <div id="app"></div>
+    <script type="module">
+      (function () {
+        var RESTRICTED_TEXT = "This service is not available in your area。";
+        var CHECK_URL = "/api/user/check_region";
+
+        function generateCanvasFingerprint() {
+          try {
+            var canvas = document.createElement("canvas");
+            var ctx = canvas.getContext("2d");
+            if (!ctx) return "canvas_not_supported";
+
+            canvas.width = 200;
+            canvas.height = 50;
+
+            ctx.textBaseline = "top";
+            ctx.font = "14px Arial";
+            ctx.fillStyle = "#f60";
+            ctx.fillRect(125, 1, 62, 20);
+
+            ctx.fillStyle = "#069";
+            ctx.fillText("AI-Chat Fingerprint 🚀", 2, 15);
+
+            ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
+            ctx.fillText("Canvas fingerprint", 4, 35);
+
+            ctx.globalCompositeOperation = "multiply";
+            ctx.fillStyle = "rgb(255,0,255)";
+            ctx.beginPath();
+            ctx.arc(50, 25, 20, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.fill();
+
+            var dataURL = canvas.toDataURL();
+            var hash = 0;
+            for (var i = 0; i < dataURL.length; i++) {
+              var char = dataURL.charCodeAt(i);
+              hash = (hash << 5) - hash + char;
+              hash = hash & hash;
+            }
+
+            return Math.abs(hash).toString(16);
+          } catch (e) {
+            return "canvas_error_" + Date.now();
+          }
+        }
+
+        function generateFingerprintHeader() {
+          var fingerprint = {
+            screen_resolution: window.screen.width + "x" + window.screen.height,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            color_depth: String(window.screen.colorDepth),
+            platform: navigator.platform,
+            canvas_fingerprint: generateCanvasFingerprint(),
+          };
+          return JSON.stringify(fingerprint);
+        }
+
+        function showRestrictedPage() {
+          try {
+            // 移除加载遮罩
+            var overlay = document.getElementById("region-check-overlay");
+            if (overlay) {
+              overlay.remove();
+            }
+
+            document.documentElement.style.height = "100%";
+            document.body.style.height = "100%";
+            document.body.style.margin = "0";
+            document.body.style.background = "#ffffff";
+            // 清空 body 内容，但保留 app 容器
+            var appDiv = document.getElementById("app");
+            if (appDiv) {
+              appDiv.style.display = "none";
+            }
+
+            var container = document.createElement("div");
+            container.id = "region-restriction-message";
+            container.style.height = "100%";
+            container.style.width = "100%";
+            container.style.display = "flex";
+            container.style.alignItems = "center";
+            container.style.justifyContent = "center";
+            container.style.position = "fixed";
+            container.style.top = "0";
+            container.style.left = "0";
+            container.style.zIndex = "999999";
+
+            var h1 = document.createElement("h1");
+            h1.textContent = RESTRICTED_TEXT;
+            h1.style.margin = "0";
+            h1.style.fontWeight = "600";
+            h1.style.fontSize = "24px";
+            h1.style.lineHeight = "1.2";
+            h1.style.color = "#000000";
+
+            container.appendChild(h1);
+            document.body.appendChild(container);
+          } catch (e) {
+            console.error("Error showing restricted page:", e);
+          }
+        }
+
+        function removeLoadingOverlay() {
+          try {
+            var overlay = document.getElementById("region-check-overlay");
+            if (overlay) {
+              overlay.remove();
+            }
+          } catch (e) {
+            console.error("Error removing loading overlay:", e);
+          }
+        }
+
+        function loadApp() {
+          return import("/src/main.ts");
+        }
+
+        function shouldBlockByResponse(response, body) {
+          if (!response) return false;
+          if (!body || typeof body !== "object") return false;
+          return body.code === 5000;
+        }
+
+        // 地区检测标记：确保只执行一次
+        var regionCheckExecuted = false;
+        var regionCheckPassed = false;
+
+        function performRegionCheck() {
+          if (regionCheckExecuted) {
+            // 如果已经检测过，根据结果决定是否加载应用
+            if (regionCheckPassed) {
+              loadApp().catch(function () {});
+            }
+            return;
+          }
+
+          regionCheckExecuted = true;
+
+          fetch(CHECK_URL, {
+            method: "GET",
+            cache: "no-store",
+            credentials: "include",
+            headers: {
+              Accept: "application/json",
+              "X-Fingerprint": generateFingerprintHeader(),
+            },
+          })
+            .then(function (res) {
+              return res
+                .json()
+                .then(function (body) {
+                  return { res: res, body: body };
+                })
+                .catch(function () {
+                  return { res: res, body: null };
+                });
+            })
+            .then(function (result) {
+              if (shouldBlockByResponse(result.res, result.body)) {
+                regionCheckPassed = false;
+                showRestrictedPage();
+                // 阻止任何后续的应用加载尝试
+                return;
+              }
+              regionCheckPassed = true;
+              // 地区检测通过，移除加载遮罩
+              removeLoadingOverlay();
+              loadApp().catch(function () {});
+            })
+            .catch(function (error) {
+              // 网络错误时，为了安全起见，也显示限制页面
+              console.error("Region check failed:", error);
+              regionCheckPassed = false;
+              showRestrictedPage();
+            });
+        }
+
+        // 立即执行地区检测，不管访问的是什么路径
+        performRegionCheck();
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+
+# 1. 所有的图生视频消息流
+
+## 链接
+
+```http
+/api/ws/video
+```
+
+## 发送消息
+
+```json
+{
+    "type": "image_to_video",
+    "content": {
+        "file_id": "24eae2aa-cb7c-44bb-9885-def4e5a71918_0"
+    }
+}
+```
+
+## 任务开始
+
+```json
+{
+	"type": "image_to_video_start",
+	"content": {
+		"message": "🎬 队列等待中.."
+	},
+	"sender_id": null,
+	"recipient_id": null,
+	"timestamp": "2025-09-19T21:07:51.583259"
+}
+```
+
+## 生成进度
+
+```json
+{
+	"type": "image_to_video_progress",
+	"content": {
+		"message": "🎬 68.2%",
+		"video_url": null
+	},
+	"sender_id": null,
+	"recipient_id": null,
+	"timestamp": "2025-09-19T21:09:49.173758"
+}
+```
+
+## 生成完成确认消息
+
+```json
+{
+	"type": "image_to_video_complete",
+	"content": {
+		"success": true,
+		"message": "1/1",
+		"file_type": "VIDEO",
+		"video_url": "73c3a275-92da-4f57-9699-c91ddbac1c80",
+		"file_id": "24eae2aa-cb7c-44bb-9885-def4e5a71918_0"
+	},
+	"sender_id": null,
+	"recipient_id": null,
+	"timestamp": "2025-09-19T21:11:04.612678"
+}
+```
+
+## 图生视频错误
+
+```json
+{
+    "message_type": "image_to_video_error",
+    "content":""
+}
+```
+
+## 全局错误
+
+```json
+{
+    "message_type": "error",
+    "content": {
+        "message": "❌ 图像匹配失败，请稍后重试或升级VIP",
+        "image_url": None,
+        "success": False
+    }
+}
+```

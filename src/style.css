@@ -1,0 +1,446 @@
+/* src/styles/global.css or similar */
+
+/* Default (Light) Theme Variables */
+
+:root {
+  --c-app-color: #7562ff;
+  --c-background: #f2f2f2;
+  --sidebar-background: #ffffff;
+  --c-invert-background: #000000;
+  --c-invert-icon: #1f2225;
+  --c-invert-text: #ffffff;
+  --c-hover-background: #e6e8eb;
+  --c-active-background: #7562ff;
+  --c-soild-background: #ffffff;
+  /* Pink color for likes */
+  --c-pink-color: #FF4A7A;
+  /* White background */
+  --c-role-card-backgournd: #ffffff;
+  /* Dark gray text */
+  --c-text-primary: #000000;
+  --c-text-secondary: #606266;
+  --c-secondary-background: #ffffff;
+
+  --btn-border: #e2e1e8;
+  
+  --btn-background: #ffffff;
+  --btn-active-background: #ffffff;
+  --btn-active-shadow: #7562ff;
+  --btn-shadow: #ffffff;
+
+  /* Menu Group */
+  --menu-background: #ffffff;
+  --menu-item-background: transparent;
+  --menu-item-hover-background: #f1effd;
+  --menu-item-text: #000000;
+  --menu-item-active-text: #ffffff;
+  --menu-item-active-background: #7562ff;
+  --active-border: 0 0 0 2px rgba(121, 72, 234, 1);
+
+  /* 距离 */
+  --first-margin: 36px;
+  --second-margin: 24px;
+  --third-margin: 12px;
+  --page-x-padding: 18px;
+  --page-y-padding: 24px;
+  --big-card-x-padding: 24px;
+  --big-card-y-padding: 20px;
+  --large-card-x-padding: 16px;
+  --large-card-y-padding: 12px;
+  --card-x-padding: 12px;
+  --card-y-padding: 8px;
+  --small-card-x-padding: 8px;
+  --small-card-y-padding: 4px;
+  --second-background:#FAFAFC;
+
+  /* 卡片样式 */
+  --card-background: #ffffff;
+  --active-border: 0px 0px 0px 2px var(--c-app-color);
+  --border: 0 0 0 1px var(--btn-border);
+  --hover-border: 0 0 0 1px #EBEEF5;
+  
+  /* 聊天内容样式 */
+  --chat-content-background: #ffffff;
+  --chat-content-text: var(--c-text-primary);
+
+  /* Tabs label color */
+  --c-tabs-text: #9C9BA3;
+
+  /* Select styles */
+  --c-select-border: #e2e1e8;
+  --c-select-text: #9C9BA3;
+  --select-font-size: 14px;
+}
+
+/* Dark Theme Variables */
+:root.dark {
+  --c-background: #111111;
+  --c-secondary-background: rgba(255, 255, 255, 0.1);
+  --sidebar-background: #111111;
+  --c-invert-background: #ffffff;
+  --c-invert-icon: #eaeaeb;
+  --c-invert-text: #000000;
+  --c-soild-background: #111111;
+  --c-hover-background: #2a292f;
+  /* Pink color for likes */
+  --c-pink-color: #FF4A7A;
+  /* White background */
+  --c-role-card-backgournd: #2a292f;
+  /* Dark gray text */
+  --c-text-primary: #ffffff;
+  --c-text-secondary: #a8abb2;
+
+  --btn-border: #424143;
+  --btn-background: #111111;
+  --btn-active-background: #ffffff;
+  --btn-active-shadow: #ffffff;
+  --btn-shadow: #49494f;
+
+  /* Menu Group */
+  --menu-background: #111111;
+  --menu-item-background: transparent;
+  --menu-item-hover-background: #1d1c1f;
+  --menu-item-text: #a6a6a6;
+  --menu-item-active-text: #ffffff;
+  --menu-item-active-background: #7562ff;
+
+  --card-background: #2a292f;
+  --second-background:#39393E;
+  --active-border: 0px 0px 0px 2px var(--c-app-color);
+  --border: 0 0 0 1px var(--btn-border);
+  --hover-border: 0 0 0 1px #EBEEF5;
+  /* 聊天内容样式 */
+  --chat-content-background: #2a292f;
+  --chat-content-text: var(--c-text-primary);
+
+  /* Tabs label color (dark) */
+  --c-tabs-text: #9C9BA3;
+
+  /* Select styles (dark) */
+  --c-select-border: #3C3A42;
+  --c-select-text: #9C9BA3;
+  --select-font-size: 14px;
+}
+
+/* Optional: Add smooth transition for theme changes */
+body {
+  /* transition: background-color 0.3s ease, color 0.3s ease; */
+}
+
+html {
+  background-color: var(--c-background);
+
+}
+.n-base-icon svg {
+  height: 0.8em !important;
+  width: 0.8em !important;
+  margin: 2px 2px 2px 2px;
+  /* margin: 4px 4px 4px 4px; */
+}
+.n-tabs .n-tabs-tab-pad {
+  width: 24px !important;
+}
+.n-tabs .n-tabs-tab .n-tabs-tab__label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-tabs-text);
+}
+.n-tabs .n-tabs-tab.n-tabs-tab--active .n-tabs-tab__label {
+  color: var(--c-text-primary) !important;
+}
+
+/* (Home-only) Select styles moved to HomeView.vue */
+.n-tab-pane {
+  /* padding: var(--page-y-padding) 0 !important; */
+}
+/* .n-base-icon {
+  height: 1.2em;
+  width: 1.2em;
+  padding: 3px 3px ;
+} */
+.n-carousel__arrow-group {
+  top: 50%;
+  left: 0;
+  bottom: auto;
+  right: auto;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+.n-base-selection .n-base-selection-label {
+  /* color: var(--c-text-primary);
+  border-color: var(--c-app-color);
+  background-color: transparent; */
+  /* background-color: #EBEBF0; */
+}
+
+.n-select > div {
+  /* border-color: var(--c-app-color) !important; */
+}
+
+.divider-alt {
+  position: relative;
+  text-align: center;
+  color: #666;
+  font-size: 14px;
+}
+
+.divider-alt::before,
+.divider-alt::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 2px;
+  background: linear-gradient(to right, #ccc 50%, transparent 100%);
+  transform: translateY(-50%);
+}
+
+.divider-alt::after {
+  right: 0;
+  background: linear-gradient(to left, #ccc 50%, transparent 100%);
+}
+
+/* 高分辨率屏幕适配 */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .relative {
+    /* 高分辨率屏幕的字体渲染优化 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* 高分辨率屏幕图片优化 */
+  .image-optimized {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* 图片渲染质量优化 */
+.image-optimized {
+  /* 优化图片缩放质量 */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  
+  /* 确保图片平滑缩放 */
+  -ms-interpolation-mode: bicubic;
+  
+  /* 防止图片模糊 */
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.avatar-image {
+  /* 聊天头像定制优化：避免 translateZ 带来的模糊 */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  backface-visibility: visible;
+  transform: none;
+  -ms-interpolation-mode: bicubic;
+}
+
+/* 通用图片优化 */
+img, .n-image img {
+  /* 默认图片渲染优化 */
+  image-rendering: auto;
+  image-rendering: -webkit-optimize-contrast;
+  
+  /* 确保图片在缩放时保持质量 */
+  -ms-interpolation-mode: bicubic;
+}
+
+/* Ensure UnoCSS virtual module is imported in main.ts */
+/* import 'virtual:uno.css'; */
+/* import './styles/global.css'; */
+
+/* ===== 媒体保护样式 ===== */
+
+/* 全局媒体元素保护 */
+img, video {
+  /* 禁用右键菜单 */
+  pointer-events: auto;
+  
+  /* 禁用拖拽 */
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  
+  /* 禁用选择 */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+  /* 禁用触摸操作 */
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.subscription-modal :deep(.n-card) {
+  border-radius: 25px;
+}
+
+.subscription-modal :deep(.n-card-header) {
+  padding: 20px 0;
+}
+
+.subscription-modal :deep(.n-card__content) {
+  padding: 20px;
+}
+
+/* 媒体保护容器类 */
+.media-protected {
+  position: relative;
+  display: inline-block;
+  
+  /* 禁用选择 */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  
+  /* 禁用拖拽 */
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+/* 媒体保护覆盖层 */
+.media-protection-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  background: transparent;
+  cursor: default;
+  pointer-events: none; /* 允许点击事件穿透，但仍然可以监听特定事件 */
+}
+
+/* 禁用打印时的媒体显示 */
+@media print {
+  img, video, .media-protected {
+    display: none !important;
+  }
+}
+
+/* 移动端长按禁用 */
+@media (max-width: 768px) {
+  img, video, .media-protected {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+/* 禁用图片的默认浏览器行为 */
+img::selection {
+  background: transparent;
+}
+
+img::-moz-selection {
+  background: transparent;
+}
+
+video::selection {
+  background: transparent;
+}
+
+video::-moz-selection {
+  background: transparent;
+}
+
+/* ===== Header Loading Bar 样式 ===== */
+/* Loading bar 定位在 header 下方 */
+.n-loading-bar-container {
+  top: 64px !important;
+  z-index: 49 !important;
+}
+
+/* ===== 共享遮罩/会员引导样式 ===== */
+/* 通用遮罩容器 */
+.masked-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 会员遮罩外层 */
+.premium-mask {
+  position: relative;
+}
+
+
+.premium-mask__center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.premium-mask__bottom {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.masked-overlay__desc {
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+
+
+
+/* Loading bar 主题色覆盖 */
+.n-loading-bar-container .n-loading-bar {
+  --n-bar-color: var(--c-app-color, #7562FF) !important;
+}
+
+.n-loading-bar-container .n-loading-bar--error {
+  --n-bar-color: #ff4757 !important;
+}
+
+/* ===== 文本渲染增强（Emoji 发光 + 加粗） ===== */
+.emoji-glow {
+  display: inline-block;
+  /* 轻微放大以凸显表情 */
+  transform: translateZ(0);
+  font-size: 1.5em; /* 放大一半 */
+  line-height: 1;
+  vertical-align: -0.15em;
+  /* 发光效果（浅色/深色均可见） */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+  text-shadow: 0 0 6px rgba(117, 98, 255, 0.35), 0 0 10px rgba(117, 98, 255, 0.25);
+}
+
+.chat-text-strong {
+  font-weight: 800;
+  color: var(--c-text-primary);
+}
+
+.n-card > .n-card__content , .n-card > .n-card-header{
+    padding: 12px;
+}
+.n-card > .n-card__content{
+    padding-top: 0;
+
+}
+.n-card > .n-card-header{
+    padding-bottom: 16px;
+    padding-top:16px;
+}
