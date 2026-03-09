@@ -1012,6 +1012,7 @@ watch(
       displayedText: msg.displayedText,
       isLoading: msg.isLoading,
       isTyping: msg.isTyping,
+      videoUrl: msg.videoUrl,
     })),
   async () => {
     await nextTick();
