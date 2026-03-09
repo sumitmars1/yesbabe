@@ -38,6 +38,36 @@ const oneMonthCurrentPrice = computed(() => {
   return vipPrices.value.find((plan) => plan.month === 1)?.current_price ?? "";
 });
 
+// 每月赠送的钻石数量（基础值）
+const DIAMONDS_PER_MONTH = 100;
+
+// 计算每月钻石数量（固定值）
+const monthlyDiamondsPerMonth = computed(() => {
+  return DIAMONDS_PER_MONTH;
+});
+
+// 计算选中套餐的总钻石数量
+const monthlyDiamondsTotal = computed(() => {
+  if (vipPrices.value.length === 0) return DIAMONDS_PER_MONTH;
+  const plan = vipPrices.value[selectedPlan.value];
+  if (!plan) return DIAMONDS_PER_MONTH;
+  return plan.month * DIAMONDS_PER_MONTH;
+});
+
+// 格式化钻石数量文本，高亮显示数字
+const formatMonthlyDiamondsText = (amount: number, total: number) => {
+  const text = t("subscriptionModal.monthlyDiamonds", { amount, total });
+  // 使用占位符替换，避免数字相同时的冲突问题
+  const amountPlaceholder = `__AMOUNT_${Date.now()}__`;
+  const totalPlaceholder = `__TOTAL_${Date.now()}__`;
+  
+  return text
+    .replace(String(amount), amountPlaceholder)
+    .replace(String(total), totalPlaceholder)
+    .replace(amountPlaceholder, `<span class="diamond-number">${amount}</span>`)
+    .replace(totalPlaceholder, `<span class="diamond-number">${total}</span>`);
+};
+
 // 暴露方法给父组件
 const show = () => {
   showModal.value = true;
@@ -257,9 +287,7 @@ defineExpose({
                   clip-rule="evenodd"
                 ></path>
               </svg>
-              <span class="text-sm text-secondary">{{
-                t("subscriptionModal.monthlyDiamonds")
-              }}</span>
+              <span class="text-sm text-secondary" v-html="formatMonthlyDiamondsText(monthlyDiamondsPerMonth, monthlyDiamondsTotal)"></span>
             </div>
             <div class="flex items-center space-x-2">
               <svg
@@ -535,6 +563,25 @@ defineExpose({
   .plan-card {
     min-height: 100px;
   }
+}
+
+/* 钻石数字高亮样式 - 使用 :deep 穿透 scoped 作用域 */
+:deep(.diamond-number) {
+  font-weight: 800 !important;
+  font-size: 1.05em;
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+  padding: 0 2px;
+}
+
+.dark :deep(.diamond-number) {
+  background: linear-gradient(135deg, #c084fc 0%, #f472b6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* 骨架屏样式适配 */

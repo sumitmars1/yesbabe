@@ -426,7 +426,7 @@ export default {
     description: 'Giới hạn tin nhắn miễn phí của bạn đã hết. Vui lòng nâng cấp lên Pro để nhận thêm nhiều quyền lợi.',
     proBenefitsTitle: 'Quyền lợi thành viên Pro',
     benefits: {
-      monthlyDiamonds: 'Tặng 100 kim cương mỗi tháng',
+      monthlyDiamonds: 'Tặng {amount} kim cương mỗi tháng (Tổng {total})',
       voiceCall: 'Cuộc gọi thoại AI thời gian thực',
       createPersonalizedAI: 'Tạo bạn gái AI cá nhân hóa',
       unlimitedChat: 'Giao tiếp văn bản và thoại không giới hạn',
@@ -635,7 +635,7 @@ export default {
   },
   premium: {
     premium: {
-      monthlyDiamonds: 'Nhận 100 kim cương mỗi tháng',
+      monthlyDiamonds: 'Nhận {amount} kim cương mỗi tháng (Tổng {total})',
       voiceCall: 'Thực hiện cuộc gọi thoại AI',
       createAIGirlfriend: 'Tạo bạn gái AI của riêng bạn',
       unlimitedCommunication: 'Trò chuyện văn bản không giới hạn',
@@ -741,7 +741,7 @@ export default {
   subscriptionModal: {
     title: 'Nâng cấp lên Pro',
     proBenefits: 'Quyền lợi thành viên Pro',
-    monthlyDiamonds: 'Nhận 100 kim cương mỗi tháng',
+    monthlyDiamonds: 'Nhận {amount} kim cương mỗi tháng (Tổng {total})',
     voiceCall: 'Thực hiện cuộc gọi thoại AI',
     createAI: 'Tạo bạn gái AI của riêng bạn',
     unlimitedChat: 'Trò chuyện văn bản không giới hạn',

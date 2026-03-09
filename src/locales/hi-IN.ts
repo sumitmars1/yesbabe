@@ -426,7 +426,7 @@ export default {
     description: 'आपकी मुफ्त संदेश सीमा समाप्त हो गई है। अधिक लाभों के लिए कृपया प्रो में अपग्रेड करें।',
     proBenefitsTitle: 'प्रो सदस्यता लाभ',
     benefits: {
-      monthlyDiamonds: '100 हीरों का मासिक उपहार',
+      monthlyDiamonds: '{amount} हीरों का मासिक उपहार (कुल {total})',
       voiceCall: 'AI रीयल-टाइम वॉयस कॉल',
       createPersonalizedAI: 'व्यक्तिगत AI गर्लफ्रेंड बनाएं',
       unlimitedChat: 'असीमित टेक्स्ट और वॉयस संचार',
@@ -635,7 +635,7 @@ export default {
   },
   premium: {
     premium: {
-      monthlyDiamonds: 'हर महीने 100 हीरे प्राप्त करें',
+      monthlyDiamonds: 'हर महीने {amount} हीरे प्राप्त करें (कुल {total})',
       voiceCall: 'AI वॉयस कॉल करें',
       createAIGirlfriend: 'अपनी खुद की AI गर्लफ्रेंड बनाएं',
       unlimitedCommunication: 'असीमित टेक्स्ट चैट',
@@ -741,7 +741,7 @@ export default {
   subscriptionModal: {
     title: 'प्रो में अपग्रेड करें',
     proBenefits: 'प्रो सदस्यता लाभ',
-    monthlyDiamonds: 'हर महीने 100 हीरे प्राप्त करें',
+    monthlyDiamonds: 'हर महीने {amount} हीरे प्राप्त करें (कुल {total})',
     voiceCall: 'AI वॉयस कॉल करें',
     createAI: 'अपनी खुद की AI गर्लफ्रेंड बनाएं',
     unlimitedChat: 'असीमित टेक्स्ट चैट',

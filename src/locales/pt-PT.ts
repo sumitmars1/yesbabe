@@ -426,7 +426,7 @@ export default {
     description: 'O limite de mensagens gratuitas foi atingido. Atualize para Pro para mais benefícios.',
     proBenefitsTitle: 'Benefícios de membro Pro',
     benefits: {
-      monthlyDiamonds: 'Oferta mensal de 100 diamantes',
+      monthlyDiamonds: 'Oferta mensal de {amount} diamantes (Total {total})',
       voiceCall: 'Chamada de voz em tempo real com IA',
       createPersonalizedAI: 'Criar namorada IA personalizada',
       unlimitedChat: 'Comunicação de texto e voz ilimitada',
@@ -635,7 +635,7 @@ export default {
   },
   premium: {
     premium: {
-      monthlyDiamonds: 'Recebe 100 diamantes por mês',
+      monthlyDiamonds: 'Recebe {amount} diamantes por mês (Total {total})',
       voiceCall: 'Fazer chamadas de voz com IA',
       createAIGirlfriend: 'Cria a tua própria namorada IA',
       unlimitedCommunication: 'Chat de texto ilimitado',
@@ -741,7 +741,7 @@ export default {
   subscriptionModal: {
     title: 'Atualizar para Pro',
     proBenefits: 'Benefícios de membro Pro',
-    monthlyDiamonds: 'Recebe 100 diamantes por mês',
+    monthlyDiamonds: 'Recebe {amount} diamantes por mês (Total {total})',
     voiceCall: 'Fazer chamadas de voz com IA',
     createAI: 'Cria a tua própria namorada IA',
     unlimitedChat: 'Chat de texto ilimitado',

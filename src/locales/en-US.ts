@@ -426,7 +426,7 @@ export default {
     description: 'Your free message limit has been reached. Please upgrade to Pro for more benefits.',
     proBenefitsTitle: 'Pro Membership Benefits',
     benefits: {
-      monthlyDiamonds: 'Monthly gift of 100 diamonds',
+      monthlyDiamonds: 'Monthly gift of {amount} diamonds (Total {total})',
       voiceCall: 'AI Real-time Voice Call',
       createPersonalizedAI: 'Create personalized AI girlfriend',
       unlimitedChat: 'Unlimited text and voice communication',
@@ -635,7 +635,7 @@ export default {
   },
   premium: {
     premium: {
-      monthlyDiamonds: 'Get 100 diamonds every month',
+      monthlyDiamonds: 'Get {amount} diamonds every month (Total {total})',
       voiceCall: 'Make AI voice calls',
       createAIGirlfriend: 'Create your own AI girlfriend',
       unlimitedCommunication: 'Unlimited text chat',
@@ -741,7 +741,7 @@ export default {
   subscriptionModal: {
     title: 'Upgrade to Pro',
     proBenefits: 'Pro Membership Benefits',
-    monthlyDiamonds: 'Get 100 diamonds every month',
+    monthlyDiamonds: 'Get {amount} diamonds every month (Total {total})',
     voiceCall: 'Make AI voice calls',
     createAI: 'Create your own AI girlfriend',
     unlimitedChat: 'Unlimited text chat',

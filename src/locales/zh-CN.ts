@@ -426,7 +426,7 @@ export default {
     description: '您的免费消息次数已用完，请订阅Pro享受更多权益',
     proBenefitsTitle: 'Pro订阅权益',
     benefits: {
-      monthlyDiamonds: '每月赠送100钻石',
+      monthlyDiamonds: '每月赠送{amount}钻石（共{total}个）',
       voiceCall: 'AI实时语音通话',
       createPersonalizedAI: '创建个性化AI女友',
       unlimitedChat: '无限制的短信和语音交流',
@@ -635,7 +635,7 @@ export default {
   },
   premium: {
     premium: {
-      monthlyDiamonds: '每月赠送 100 个钻石',
+      monthlyDiamonds: '每月赠送 {amount} 个钻石（共 {total} 个）',
       voiceCall: '进行 AI 语音通话',
       createAIGirlfriend: '创建属于你自己的 AI 女友',
       unlimitedCommunication: '无限文字聊天',
@@ -741,7 +741,7 @@ export default {
   subscriptionModal: {
     title: '升级到Pro订阅',
     proBenefits: 'Pro订阅权益',
-    monthlyDiamonds: '每月赠送 100 个钻石',
+    monthlyDiamonds: '每月赠送 {amount} 个钻石（共 {total} 个）',
     voiceCall: '进行 AI 语音通话',
     createAI: '创建属于你自己的 AI 女友',
     unlimitedChat: '无限文字聊天',

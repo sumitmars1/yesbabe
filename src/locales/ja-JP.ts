@@ -426,7 +426,7 @@ export default {
     description: '無料メッセージ回数がなくなりました。Proを購読してより多くの特典をお楽しみください',
     proBenefitsTitle: 'Proサブスクリプション特典',
     benefits: {
-      monthlyDiamonds: '毎月100ダイヤモンド贈呈',
+      monthlyDiamonds: '毎月{amount}ダイヤモンド贈呈（合計{total}個）',
       voiceCall: 'AIリアルタイム音声通話',
       createPersonalizedAI: 'パーソナライズされたAIガールフレンドを作成',
       unlimitedChat: '無制限のテキストおよび音声交流',
@@ -635,7 +635,7 @@ export default {
   },
   premium: {
     premium: {
-      monthlyDiamonds: '毎月100ダイヤを付与',
+      monthlyDiamonds: '毎月{amount}ダイヤを付与（合計{total}個）',
       voiceCall: 'AI音声通話',
       createAIGirlfriend: '自分だけのAI彼女を作成',
       unlimitedCommunication: 'テキストチャット無制限',
@@ -741,7 +741,7 @@ export default {
   subscriptionModal: {
     title: 'Proにアップグレード',
     proBenefits: 'Proサブスクリプション特典',
-    monthlyDiamonds: '毎月100ダイヤを付与',
+    monthlyDiamonds: '毎月{amount}ダイヤを付与（合計{total}個）',
     voiceCall: 'AI音声通話',
     createAI: '自分だけのAI彼女を作成',
     unlimitedChat: 'テキストチャット無制限',

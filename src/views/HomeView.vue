@@ -31,7 +31,7 @@
               <div class="carousel-title carousel-title-shadow font-semibold text-white leading-[1.4]">{{ getCarouselTitle(1) }}</div>
               <i18n-t keypath="home.carousel.desc2" tag="div" class="carousel-desc carousel-desc-shadow font-semibold text-white leading-[1.4]">
                 <template #percent>
-                  <span style="color: #FFEB3B;">74%</span>
+                  <span style="color: #FFEB3B;">{{ vipMaxDiscountPercent }}%</span>
                 </template>
               </i18n-t>
             </div>
@@ -140,8 +140,17 @@ import type {
   HotListQuery,
   CarouselItem,
 } from "@/api/home/type";
+import {
+  getVipPrice,
+  getVipMaxDiscountPercentByOneMonthStandard,
+} from "@/api/premium";
+import type { VipPriceItem } from "@/api/premium/types";
 
 const { t, locale } = useI18n();
+
+// VIP折扣相关
+const vipPrices = ref<VipPriceItem[]>([]);
+const vipMaxDiscountPercent = ref<number>(76);
 
 // 根据语言动态计算select宽度
 const selectWidth = computed(() => {
@@ -221,6 +230,18 @@ const handleCarouselClick = (index: number) => {
 const handleCarouselButtonClick = (item: CarouselItem) => {
   if (item.click_to_url) {
     window.location.href = item.click_to_url;
+  }
+};
+
+// 加载VIP折扣
+const loadVipDiscount = async () => {
+  try {
+    const { data } = await getVipPrice();
+    vipPrices.value = data || [];
+    vipMaxDiscountPercent.value =
+      getVipMaxDiscountPercentByOneMonthStandard(vipPrices.value, 12) || 76;
+  } catch {
+    vipMaxDiscountPercent.value = 76;
   }
 };
 
@@ -391,6 +412,7 @@ onMounted(() => {
   }
 
   loadData();
+  loadVipDiscount();
   // 取消首页的账户信息请求，避免触发账户轮询
 });
 
