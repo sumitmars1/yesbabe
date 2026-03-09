@@ -5,10 +5,10 @@
         <n-skeleton class="w-full h-full rounded-lg" :sharp="false" />
       </div>
       <n-carousel v-else show-arrow autoplay effect="fade" mousewheel draggable touchable class="carousel-container"
-        @click.self="handleCarouselClick" :interval="5000" :show-dots="true">
+        :interval="5000" :show-dots="true">
         <!-- 第一张：Create AI - 居中布局，粉红背景 -->
-        <n-carousel-item>
-          <div class="carousel-item-layout carousel-item-bg w-full h-full" style="background-color: #FF2E70;">
+        <n-carousel-item @click="handleCarouselClick(0)">
+          <div class="carousel-item-layout carousel-item-bg w-full h-full cursor-pointer" style="background-color: #FF2E70;">
             <!-- 背景图片 -->
             <img src="@/assets/banner/create_ai.png" alt="Create AI" class="carousel-bg-image" />
             <!-- 文字 - 居中上方 -->
@@ -21,7 +21,7 @@
 
         <!-- 第二张：First Purchase - 左右布局，紫色背景 -->
         <n-carousel-item @click="handleCarouselClick(1)">
-          <div class="carousel-item-layout carousel-item-split-center w-full h-full" style="background-color: #6F50FA;">
+          <div class="carousel-item-layout carousel-item-split-center w-full h-full cursor-pointer" style="background-color: #6F50FA;">
             <!-- 左侧图片 -->
             <div class="carousel-image-box-left">
               <img src="@/assets/banner/first_purchase.png" alt="First Purchase" class="w-full h-full object-contain" />
@@ -40,7 +40,7 @@
 
         <!-- 第三张：Private Theme - 居中布局，紫色背景 -->
         <n-carousel-item @click="handleCarouselClick(2)">
-          <div class="carousel-item-layout carousel-item-bg w-full h-full" style="background-color: #8E50FA;">
+          <div class="carousel-item-layout carousel-item-bg w-full h-full cursor-pointer" style="background-color: #8E50FA;">
             <!-- 背景图片 -->
             <img src="@/assets/banner/private_theme.png" alt="Private Theme" class="carousel-bg-image" />
             <!-- 文字 - 居中上方 -->
@@ -211,9 +211,10 @@ const filteredCarouselList = computed(() => {
 });
 
 const handleCarouselClick = (index: number) => {
-  const item = filteredCarouselList.value[index];
-  if (item && item.click_to_url) {
-    window.location.href = item.click_to_url;
+  // 根据轮播图索引跳转到对应页面
+  const routes = ['ai-generator', '/premium/diamonds', '/premium/pro'];
+  if (index >= 0 && index < routes.length) {
+    router.push(routes[index]);
   }
 };
 
@@ -659,7 +660,7 @@ const handleChatWithRole = (roleData: HomeListData) => {
   display: flex;
   gap: 8px;
   z-index: 10;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 /* 轮播图小圆点样式优化 - 响应式缩放 */

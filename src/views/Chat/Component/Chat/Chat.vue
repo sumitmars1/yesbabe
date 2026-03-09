@@ -81,13 +81,19 @@
             <BabeButton size="medium"
               :disabled="!isConnected || !inputMessage.trim() || isReplying || !chatStore.currentChat?.id"
               @click="handleSendMessage" class="send-button-wrapper">
+              <!-- PRO用户选择特殊功能时显示价格 -->
               <template #icon v-if="shouldShowPrice">
                 <div class="flex items-center mr-1">
                   <span class="text-sm mr-1 font-semibold">{{ selectedFunction.price }}</span>
                   <svg-icon iconClass="diamond" :size="16" class="diamond-icon" />
                 </div>
               </template>
-              <n-icon size="20">
+              <!-- 非PRO用户显示剩余次数 -->
+              <template #icon v-else-if="remainingFreeCount !== null">
+                <span class="text-sm font-semibold mr-1">{{ remainingFreeCount }}/20</span>
+              </template>
+              <!-- 发送图标：非PRO用户或PRO用户正常状态都显示 -->
+              <n-icon size="20" >
                 <SendSharp />
               </n-icon>
             </BabeButton>
@@ -154,6 +160,8 @@ import SvgIcon from "@/components/SvgIcon/index.vue";
 import { useChatStore } from "@/stores/chat";
 import { useGlobalStore } from "@/stores/global/global";
 import { useThemeStore } from "@/stores/themeStore";
+import { useAuthStore } from "@/stores/auth";
+import { useFreeChatStore } from "@/stores/freeChat";
 import { useWebSocket } from "@/composables/useWebSocket";
 import { MessageType } from "@/utils/websocket";
 import { ChatMessage } from "@/types/chat";
@@ -173,6 +181,8 @@ import { showDiamondRechargeModal } from "@/utils/diamondRechargeModal";
 const globalStore = useGlobalStore();
 const chatStore = useChatStore();
 const themeStore = useThemeStore();
+const authStore = useAuthStore();
+const freeChatStore = useFreeChatStore();
 const router = useRouter();
 const { t, locale } = useI18n();
 const dialog = useDialog();
@@ -260,6 +270,21 @@ const shouldShowPrice = computed(() => {
     (selectedFunction.value.type === 'show_me' || selectedFunction.value.type === 'send_me') &&
     inputMessage.value.trim().length > 0
   );
+});
+
+// 非PRO用户剩余免费聊天次数
+const remainingFreeCount = computed(() => {
+  // PRO用户不显示
+  if (authStore.userInfo?.is_vip) return null;
+  // 获取当前模型的剩余次数
+  const companionId = chatStore.currentChat?.companion_id;
+  if (!companionId) return null;
+  return freeChatStore.getRemainingCount(companionId);
+});
+
+// 非PRO用户是否还有剩余免费次数
+const hasFreeCountLeft = computed(() => {
+  return remainingFreeCount.value !== null && remainingFreeCount.value > 0;
 });
 
 // 预设文本映射
@@ -704,10 +729,25 @@ const handleSendMessage = async () => {
     return;
   }
 
+  // 非PRO用户检查免费次数
+  const companionId = chatStore.currentChat?.companion_id;
+  if (!authStore.userInfo?.is_vip && companionId) {
+    if (!hasFreeCountLeft.value) {
+      // 显示订阅引导弹窗
+      showSubscriptionModal();
+      return;
+    }
+  }
+
   // 发送消息（现在sendMessage会处理WebSocket初始化）
   const success = await sendMessage(content);
 
   if (success) {
+    // 非PRO用户消耗免费次数
+    if (!authStore.userInfo?.is_vip && companionId) {
+      freeChatStore.decrementCount(companionId);
+    }
+
     // 清空输入框
     inputMessage.value = "";
 

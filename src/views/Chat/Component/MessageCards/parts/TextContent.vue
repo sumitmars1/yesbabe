@@ -45,7 +45,13 @@
       <div v-for="(suggestion, idx) in suggestions" :key="`${idx}-${suggestion}`" class="suggestion-chip"
         :class="{ 'suggestion-chip--disabled': isSuggestionsDisabled }" @click.stop="handleSuggestionClick(suggestion)">
         <span class="suggestion-text">{{ suggestion }}</span>
-        <svg-icon iconClass="arrow-right" :size="12" class="suggestion-arrow" />
+        <div class="suggestion-footer">
+          <svg-icon iconClass="arrow-right" :size="12" class="suggestion-arrow" />
+          <div class="suggestion-cost">
+            <svg-icon iconClass="diamond" :size="12" class="suggestion-diamond" />
+            <span class="suggestion-cost-text">4</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -423,12 +429,12 @@ const handleAudioPlay = () => {
   align-self: flex-start;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
   width: fit-content;
   max-width: 100%;
-  padding: 6px 12px;
+  padding: 8px 12px;
   background: var(--c-secondary-background);
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px solid var(--btn-border);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -472,9 +478,9 @@ const handleAudioPlay = () => {
 .suggestion-text {
   position: relative;
   z-index: 1;
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--c-text-primary);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--c-text-secondary);
   white-space: pre-wrap;
   word-break: break-word;
   text-align: left;
@@ -489,6 +495,32 @@ const handleAudioPlay = () => {
   opacity: 0;
   transform: translateX(-4px);
   transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.suggestion-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+}
+
+.suggestion-cost {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px;
+  background: rgba(117, 98, 255, 0.1);
+  border-radius: 8px;
+}
+
+.suggestion-diamond {
+  color: #7562ff;
+}
+
+.suggestion-cost-text {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--c-text-secondary);
 }
 
 /* 悬停状态 */
@@ -524,6 +556,10 @@ const handleAudioPlay = () => {
 
 .suggestion-chip--disabled .suggestion-arrow {
   display: none;
+}
+
+.suggestion-chip--disabled .suggestion-cost {
+  opacity: 0.5;
 }
 
 /* 点击反馈 */

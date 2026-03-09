@@ -18,23 +18,23 @@
     </div>
     <BottomOverlay>
       <div class="h-full mb-3 relative">
-        <!-- 图片容器 - 添加过渡效果 -->
+        <!-- 图片容器 - 直接切换 -->
         <div
-          class="w-full h-full absolute top-0 left-0 z-10 transition-all duration-300 ease-in-out media-protected"
+          class="w-full h-full absolute top-0 left-0 z-10 media-protected"
           :class="{
-            'opacity-100 scale-100': !isHovered || !roleData.cover_video_url,
-            'opacity-0 scale-95': isHovered && roleData.cover_video_url,
+            'opacity-100': !isHovered || !roleData.cover_video_url,
+            'opacity-0': isHovered && roleData.cover_video_url,
             'pointer-events-none': isHovered && roleData.cover_video_url
           }">
           <n-image object-fit="cover" width="100%" height="100%" preview-disabled
             :src="roleData.head_image || roleData.cover_video_url" class="w-full h-full" />
         </div>
-        <!-- 视频容器 - 改进的过渡效果 -->
+        <!-- 视频容器 - 直接切换 -->
         <div v-if="roleData.cover_video_url"
-          class="w-full h-full overflow-hidden absolute top-0 left-0 z-10 transition-all duration-300 ease-in-out media-protected"
+          class="w-full h-full overflow-hidden absolute top-0 left-0 z-10 media-protected"
           :class="{
-            'opacity-100 scale-100': isHovered,
-            'opacity-0 scale-105': !isHovered,
+            'opacity-100': isHovered,
+            'opacity-0': !isHovered,
             'pointer-events-none': !isHovered
           }">
           <video ref="videoRef" width="100%" height="100%" loop muted controlsList="nodownload nofullscreen noremoteplayback" style="object-fit: cover" class="w-full h-full"
