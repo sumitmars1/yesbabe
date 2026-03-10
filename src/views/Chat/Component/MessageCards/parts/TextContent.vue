@@ -442,25 +442,6 @@ const handleAudioPlay = () => {
   overflow: hidden;
 }
 
-/* 渐变边框效果 - 使用伪元素 */
-.suggestion-chip::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 20px;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(117, 98, 255, 0.3) 0%, rgba(180, 98, 255, 0.2) 100%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.suggestion-chip:hover::before {
-  opacity: 1;
-}
 
 /* 悬停光效 */
 .suggestion-chip::after {
@@ -528,6 +509,7 @@ const handleAudioPlay = () => {
 .suggestion-chip:hover {
   transform: translateX(2px);
   box-shadow: 0 4px 12px rgba(117, 98, 255, 0.12);
+  border-color: rgba(117, 98, 255, 0.4);
 }
 
 .suggestion-chip:hover .suggestion-text {
