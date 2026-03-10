@@ -172,13 +172,9 @@ import { useRoute, useRouter } from "vue-router";
 import { NSelect, NConfigProvider, NBadge } from "naive-ui";
 import { useThemeStore } from "@/stores/themeStore";
 import { useGlobalStore } from "@/stores/global/global";
+import { usePremiumStore } from "@/stores/premiumStore";
 import { useI18n } from "vue-i18n";
 import { useChatStore } from "@/stores/chat";
-import {
-  getVipPrice,
-  getVipMaxDiscountPercentByOneMonthStandard,
-} from "@/api/premium";
-import type { VipPriceItem } from "@/api/premium/types";
 import {
   LANGUAGE_OPTIONS,
   switchLanguage,
@@ -191,11 +187,9 @@ const route = useRoute();
 const router = useRouter();
 const themeStore = useThemeStore();
 const globalStore = useGlobalStore();
+const premiumStore = usePremiumStore();
 const chatStore = useChatStore();
 const { t, locale } = useI18n();
-
-const vipPrices = ref<VipPriceItem[]>([]);
-const vipMaxDiscountPercent = ref<number>(75);
 
 // 定义props和emits
 const props = defineProps({
@@ -256,7 +250,7 @@ const totalUnreadCount = computed(() => {
 });
 
 const vipDiscountLabel = computed(() => {
-  return t("menu.discountPercentOff", { percent: vipMaxDiscountPercent.value });
+  return t("menu.discountPercentOff", { percent: premiumStore.maxDiscountPercent });
 });
 
 // 获取图标颜色
@@ -287,19 +281,8 @@ const handleThemeChange = (value: string) => {
   }
 };
 
-const loadVipDiscount = async () => {
-  try {
-    const { data } = await getVipPrice();
-    vipPrices.value = data || [];
-    vipMaxDiscountPercent.value =
-      getVipMaxDiscountPercentByOneMonthStandard(vipPrices.value, 12) || 75;
-  } catch {
-    vipMaxDiscountPercent.value = 75;
-  }
-};
-
 onMounted(() => {
-  loadVipDiscount();
+  premiumStore.loadVipPrices();
 });
 </script>
 

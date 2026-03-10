@@ -140,17 +140,13 @@ import type {
   HotListQuery,
   CarouselItem,
 } from "@/api/home/type";
-import {
-  getVipPrice,
-  getVipMaxDiscountPercentByOneMonthStandard,
-} from "@/api/premium";
-import type { VipPriceItem } from "@/api/premium/types";
+import { usePremiumStore } from "@/stores/premiumStore";
 
 const { t, locale } = useI18n();
+const premiumStore = usePremiumStore();
 
-// VIP折扣相关
-const vipPrices = ref<VipPriceItem[]>([]);
-const vipMaxDiscountPercent = ref<number>(76);
+// VIP折扣相关（从全局 store 获取）
+const vipMaxDiscountPercent = computed(() => premiumStore.maxDiscountPercent);
 
 // 根据语言动态计算select宽度
 const selectWidth = computed(() => {
@@ -230,18 +226,6 @@ const handleCarouselClick = (index: number) => {
 const handleCarouselButtonClick = (item: CarouselItem) => {
   if (item.click_to_url) {
     window.location.href = item.click_to_url;
-  }
-};
-
-// 加载VIP折扣
-const loadVipDiscount = async () => {
-  try {
-    const { data } = await getVipPrice();
-    vipPrices.value = data || [];
-    vipMaxDiscountPercent.value =
-      getVipMaxDiscountPercentByOneMonthStandard(vipPrices.value, 12) || 76;
-  } catch {
-    vipMaxDiscountPercent.value = 76;
   }
 };
 
@@ -412,7 +396,7 @@ onMounted(() => {
   }
 
   loadData();
-  loadVipDiscount();
+  premiumStore.loadVipPrices();
   // 取消首页的账户信息请求，避免触发账户轮询
 });
 

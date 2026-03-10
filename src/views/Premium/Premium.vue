@@ -172,9 +172,7 @@ import PriceCard from './PriceCard.vue';
 import { CheckmarkCircleSharp } from '@vicons/ionicons5';
 import PremiumBg from '@/assets/icons/pic/premium_bg.png';
 import { useGlobalStore } from '@/stores/global/global';
-import { getVipPrice, getVipMaxDiscountPercentByOneMonthStandard } from '@/api/premium';
-import type { VipPriceItem } from '@/api/premium/types';
-import Premium from '@/components/Header/Components/Premium.vue';
+import { usePremiumStore } from '@/stores/premiumStore';
 import { useAuthStore } from '@/stores/auth';
 import { showPaymentModal } from '@/utils/paymentModal';
 import { useI18n } from 'vue-i18n';
@@ -185,12 +183,14 @@ const { t } = useI18n();
 const { currencySymbol, formatCurrency } = useCurrency();
 const route = useRoute();
 const globalStore = useGlobalStore();
+const premiumStore = usePremiumStore();
 const authStore = useAuthStore();
 const selectedPlan = ref(0);
-const loading = ref(false);
-const vipPrices = ref<VipPriceItem[]>([]);
 const paymentLoading = ref(false);
 const message = (window as any).$message;
+
+const vipPrices = computed(() => premiumStore.vipPrices);
+const loading = computed(() => premiumStore.loading);
 
 const oneMonthCurrentPrice = computed(() => {
   return vipPrices.value.find((plan) => plan.month === 1)?.current_price ?? '';
@@ -200,9 +200,7 @@ const oneMonthCurrentPrice = computed(() => {
 const DIAMONDS_PER_MONTH = 100;
 
 // 计算每月钻石数量（固定值）
-const monthlyDiamondsPerMonth = computed(() => {
-  return DIAMONDS_PER_MONTH;
-});
+const monthlyDiamondsPerMonth = computed(() => DIAMONDS_PER_MONTH);
 
 // 计算选中套餐的总钻石数量
 const monthlyDiamondsTotal = computed(() => {
@@ -225,11 +223,9 @@ const formatMonthlyDiamondsText = (amount: number, total: number) => {
     .replace(totalPlaceholder, `<span class="diamond-number">${total}</span>`);
 };
 
-// 计算最大折扣
+// 计算最大折扣（从全局 store 获取）
 const maxDiscount = computed(() => {
-  const discountPercent =
-    getVipMaxDiscountPercentByOneMonthStandard(vipPrices.value, 12) || 75;
-  return t("menu.discountPercentOff", { percent: discountPercent });
+  return t("menu.discountPercentOff", { percent: premiumStore.maxDiscountPercent });
 });
 
 // 计算选中的Pro套餐
@@ -237,29 +233,6 @@ const selectedVipPrice = computed(() => {
   if (vipPrices.value.length === 0) return { current_price: "0.00" };
   return vipPrices.value[selectedPlan.value] || { current_price: "0.00" };
 });
-
-// 加载Pro价格数据
-const loadVipPrices = async () => {
-  loading.value = true;
-  try {
-    const { data } = await getVipPrice();
-
-    // 直接使用API返回的原始数据
-    vipPrices.value = data || [];
-
-    // 按月份排序（1个月、3个月、12个月）
-    vipPrices.value.sort((a, b) => {
-      const order = [1, 3, 12];
-      return order.indexOf(a.month) - order.indexOf(b.month);
-    });
-  } catch (error) {
-    console.error(t('premium.premium.failedToLoadPrice'), error);
-    // 如果API失败，使用默认数据
-    vipPrices.value = [];
-  } finally {
-    loading.value = false;
-  }
-};
 
 // 处理Pro支付
 const handleVipPayment = () => {
@@ -292,7 +265,7 @@ const handleVipPayment = () => {
 };
 
 onMounted(() => {
-  loadVipPrices();
+  premiumStore.loadVipPrices();
 });
 </script>
 
