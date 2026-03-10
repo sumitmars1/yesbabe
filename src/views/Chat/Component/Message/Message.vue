@@ -53,6 +53,7 @@ import { useThemeStore } from "@/stores/themeStore";
 import { useChatStore } from "@/stores/chat";
 import { useAuthStore } from "@/stores/auth";
 import { useI18n } from "vue-i18n";
+import { stripSuggestedReplies } from "@/utils/suggestedReply";
 
 const { t } = useI18n();
 
@@ -214,13 +215,6 @@ const extractMessageContent = (content: any): string => {
   }
 
   return "";
-};
-
-const stripSuggestedReplies = (input: string): string => {
-  const text = input ?? "";
-  const firstMarkerIndex = text.indexOf("%%%");
-  if (firstMarkerIndex === -1) return text;
-  return text.slice(0, firstMarkerIndex).replace(/\s+$/, "");
 };
 
 // 更新消息列表中的最新消息

@@ -68,6 +68,7 @@ import { formatTextWithEmojis } from '@/utils/emoji';
 import { MessageType } from '@/utils/websocket';
 import { showSubscriptionModal } from '@/utils/subscriptionModal';
 import BlobsColorCircle from '@/components/BlobsColorCircle/index.vue';
+import { stripSuggestedReplies } from "@/utils/suggestedReply";
 
 const props = defineProps<{
   content: any;
@@ -102,13 +103,6 @@ const startMessage = computed(() => {
   if (v && typeof v === 'object' && typeof v.message === 'string') return v.message;
   return t('chatItem.generatingReply');
 });
-
-const stripSuggestedReplies = (input: string) => {
-  const text = input ?? "";
-  const firstMarkerIndex = text.indexOf("%%%");
-  if (firstMarkerIndex === -1) return text;
-  return text.slice(0, firstMarkerIndex).replace(/\s+$/, "");
-};
 
 const typingHtml = computed(() => {
   const raw = props.typingText || contentForText.value || '';

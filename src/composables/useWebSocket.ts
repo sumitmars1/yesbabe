@@ -1375,6 +1375,104 @@ export function useWebSocket() {
     handleQuotaExhausted(wsMessage);
   };
 
+  const settleActiveGenerationMessageAsText = (
+    wsMessage: WebSocketMessage,
+    messageText: string
+  ) => {
+    const rawType =
+      (typeof wsMessage.raw?.type === "string" && wsMessage.raw.type) ||
+      (typeof wsMessage.content?.type === "string" && wsMessage.content.type) ||
+      (typeof wsMessage.content?.data?.type === "string" && wsMessage.content.data.type) ||
+      "";
+    const uniqueKey = extractUniqueIdentifier(
+      wsMessage.content,
+      wsMessage.content?.data,
+      wsMessage.raw
+    );
+    const fileId =
+      wsMessage.content?.file_id ??
+      wsMessage.content?.data?.file_id ??
+      wsMessage.raw?.file_id;
+
+    let targetIndex = findMessageIndexByIdentifiers({
+      uniqueId: uniqueKey,
+      fileId,
+    });
+
+    const imageCandidateTypes: MessageType[] = [
+      MessageType.text_start,
+      MessageType.text_progress,
+      MessageType.stream_start,
+      MessageType.stream_chunk,
+      MessageType.text_to_image_start,
+      MessageType.text_to_image_progress,
+    ];
+    const videoCandidateTypes: MessageType[] = [
+      MessageType.text_start,
+      MessageType.text_progress,
+      MessageType.stream_start,
+      MessageType.stream_chunk,
+      MessageType.text_to_video_start,
+      MessageType.text_to_video_progress,
+    ];
+    const fallbackCandidateTypes: MessageType[] = [
+      ...imageCandidateTypes,
+      MessageType.text_to_video_start,
+      MessageType.text_to_video_progress,
+    ];
+
+    if (targetIndex === -1) {
+      const isImageGeneration =
+        rawType === MessageType.text_to_image_start ||
+        rawType === MessageType.text_to_image_progress ||
+        rawType === MessageType.menu_text_to_image_start ||
+        rawType === MessageType.menu_text_to_image_progress ||
+        rawType === "text_to_image" ||
+        rawType === "menu_text_to_image" ||
+        messageText.includes("图像") ||
+        messageText.includes("图片");
+      const isVideoGeneration =
+        rawType === MessageType.text_to_video_start ||
+        rawType === MessageType.text_to_video_progress ||
+        rawType === MessageType.image_to_video_start ||
+        rawType === MessageType.image_to_video_progress ||
+        rawType === "text_to_video" ||
+        rawType === "image_to_video" ||
+        messageText.includes("视频");
+
+      const candidateTypes = isImageGeneration
+        ? imageCandidateTypes
+        : isVideoGeneration
+          ? videoCandidateTypes
+          : fallbackCandidateTypes;
+
+      targetIndex = findLatestActiveMediaMessageIndex(candidateTypes);
+      if (targetIndex === -1 && candidateTypes !== fallbackCandidateTypes) {
+        targetIndex = findLatestActiveMediaMessageIndex(fallbackCandidateTypes);
+      }
+    }
+
+    if (targetIndex === -1) return;
+
+    const current = { ...messages.value[targetIndex] };
+    ensureMessageIdentifiers(current, {
+      uniqueId: uniqueKey,
+    });
+    current.type = MessageType.message;
+    current.content = {
+      message: messageText,
+    };
+    current.displayedText = messageText;
+    current.isLoading = false;
+    current.isTyping = false;
+    current.hasError = false;
+    delete current.loadingIndicator;
+    delete current.progress;
+
+    messages.value[targetIndex] = current;
+    saveMessageToStorage(current);
+  };
+
   /**
    * 处理余额不足错误 - 显示钻石充值弹窗
    */
@@ -1395,6 +1493,9 @@ export function useWebSocket() {
         : "余额不足，请购买钻石后重试";
 
     console.log('余额不足错误消息:', errorMessage);
+
+    // 将生成中的占位消息直接收口为普通文本消息，避免卡在 loading 状态
+    settleActiveGenerationMessageAsText(wsMessage, errorMessage);
 
     // 显示错误提示
     // window.$message?.warning?.(errorMessage);
@@ -2430,7 +2531,11 @@ const saveMessageToStorage = (message: ChatMessage) => {
   /**
    * 发送消息
    */
-  const sendMessage = async (content: string): Promise<boolean> => {
+  const sendMessage = async (
+    content: string,
+    localContent?: string,
+    shouldAddLocalMessage = true
+  ): Promise<boolean> => {
     if (!content.trim()) {
       console.warn('消息内容为空，无法发送');
       return false;
@@ -2461,10 +2566,12 @@ const saveMessageToStorage = (message: ChatMessage) => {
     // 发送WebSocket消息
     const success = wsManager.sendMessage(content.trim());
 
-    if (success) {
+    if (success && shouldAddLocalMessage) {
+      const displayContent = (localContent ?? content).trim();
+
       // 添加自己发送的消息到列表
       const userMessageContent: UserMessageContent = {
-        content: content.trim(),
+        content: displayContent,
       };
 
       const selfMessage: ChatMessage = {
@@ -3096,7 +3203,11 @@ const saveMessageToStorage = (message: ChatMessage) => {
     isReplying,
 
     // 方法
-    sendMessage: async (content: string): Promise<boolean> => sendMessage(content),
+    sendMessage: async (
+      content: string,
+      localContent?: string,
+      shouldAddLocalMessage = true
+    ): Promise<boolean> => sendMessage(content, localContent, shouldAddLocalMessage),
     sendGenerateVideoMessage,
     sendGenerateImageMessage,
     sendPurchaseCollection,

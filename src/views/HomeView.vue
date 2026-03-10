@@ -216,10 +216,12 @@ const filteredCarouselList = computed(() => {
 });
 
 const handleCarouselClick = (index: number) => {
-  // 根据轮播图索引跳转到对应页面
-  const routes = ['ai-generator', '/premium/diamonds', '/premium/pro'];
-  if (index >= 0 && index < routes.length) {
-    router.push(routes[index]);
+  // index 0 对应 id=1, index 1 对应 id=2, index 2 对应 id=3
+  const targetId = index + 1;
+  const carouselItem = carouselList.value.find(item => item.id === targetId);
+
+  if (carouselItem?.click_to_url) {
+    router.push(carouselItem.click_to_url);
   }
 };
 

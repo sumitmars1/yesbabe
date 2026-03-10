@@ -68,6 +68,10 @@ import { formatTextWithEmojis } from '@/utils/emoji';
 import { showSubscriptionModal } from '@/utils/subscriptionModal';
 import { getTextToSpeech } from '@/api/chat';
 import { useWebSocket } from "@/composables/useWebSocket";
+import {
+  normalizeSuggestedReplyText,
+  stripSuggestionPhotoMarker,
+} from "@/utils/suggestedReply";
 
 const props = defineProps<{
   content: any;
@@ -93,19 +97,14 @@ const borderRadius = computed(() => (props.isSelf ? '16px 0px 16px 16px' : '0px 
 
 const rawText = computed(() => {
   const v = props.content as any;
-  if (typeof v === 'string') return v;
+  if (typeof v === 'string') return stripSuggestionPhotoMarker(v);
   if (v && typeof v === 'object') {
     const candidate = v.content || v.message || v.full_content || '';
-    return typeof candidate === 'string' ? candidate : String(candidate ?? '');
+    const content = typeof candidate === 'string' ? candidate : String(candidate ?? '');
+    return stripSuggestionPhotoMarker(content);
   }
   return '';
 });
-
-const normalizeSuggestedReplyText = (input: string) => {
-  const text = String(input ?? "").trim();
-  if (!text) return "";
-  return text.replace(/^(?:%{3}\s*)+/, "").trim();
-};
 
 const parseSuggestedReplies = (input: string) => {
   const text = input ?? "";
@@ -122,7 +121,9 @@ const parseSuggestedReplies = (input: string) => {
   let match: RegExpExecArray | null;
   while ((match = re.exec(tail))) {
     const suggestion = normalizeSuggestedReplyText(match[1] ?? "");
-    if (suggestion) suggestions.push(suggestion);
+    if (suggestion) {
+      suggestions.push(suggestion);
+    }
   }
 
   return { bodyText, suggestions };

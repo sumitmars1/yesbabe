@@ -40,31 +40,13 @@
             <n-icon size="18" class="mr-1">
               <CheckmarkCircleSharp />
             </n-icon>
-            <span>{{ t('premium.premium.removeImageBlur') }}</span>
+            <span>{{ t('premium.premium.generateImagesAndVideos') }}</span>
           </div>
           <div class="mb-2 flex items-center">
             <n-icon size="18" class="mr-1">
               <CheckmarkCircleSharp />
             </n-icon>
-            <span>{{ t('premium.premium.generateImages') }}</span>
-          </div>
-          <div class="mb-2 flex items-center">
-            <n-icon size="18" class="mr-1">
-              <CheckmarkCircleSharp />
-            </n-icon>
-            <span>{{ t("premium.premium.generateVideos") }}</span>
-          </div>
-          <div class="mb-2 flex items-center">
-            <n-icon size="18" class="mr-1">
-              <CheckmarkCircleSharp />
-            </n-icon>
-            <span>{{ t('premium.premium.voiceCall') }}</span>
-          </div>
-          <div class="mb-2 flex items-center">
-            <n-icon size="18" class="mr-1">
-              <CheckmarkCircleSharp />
-            </n-icon>
-            <span>{{ t('premium.premium.fastResponse') }}</span>
+            <span>{{ t('premium.premium.unlockPrivateThemes') }}</span>
           </div>
         </div>
       </div>

@@ -16,6 +16,22 @@ export function usePaymentCallback() {
   const lastCheckResult = ref<{ success: boolean; message: string } | null>(null)
   const PAYMENT_PENDING_ORDER_ID_KEY = 'payment_pending_order_id'
 
+  const getLocalizedStatusMessage = (status: string) => {
+    const normalizedStatus = String(status || '').trim()
+    const map: Record<string, string> = {
+      completed: 'completed',
+      pending: 'pending',
+      cancelled: 'cancelled',
+      failed: 'failed',
+      amount_mismatch: 'amountMismatch',
+      benefit_failed: 'benefitFailed',
+      refunded: 'refunded'
+    }
+    const key = map[normalizedStatus]
+    if (key) return t(`paymentCallback.statusMessages.${key}`)
+    return t('paymentCallback.status', { status: normalizedStatus || 'unknown' })
+  }
+
   const sleep = (delay: number) => new Promise(resolve => setTimeout(resolve, delay))
 
   const refreshAccountInfoSafe = async () => {
@@ -44,7 +60,9 @@ export function usePaymentCallback() {
   }
 
   const queryOrderWithRetry = async (orderId: string) => {
-    const delays = orderId.startsWith('BR_') ? [0, 5000, 5000, 5000] : [0, 3000]
+    const delays = orderId.startsWith('BR_')
+      ? [0, 5000, 5000, 5000]
+      : Array.from({ length: 10 }, (_, index) => (index === 0 ? 0 : 3000))
     let lastResponse: UnifiedOrderQueryResponse | null = null
 
     for (let index = 0; index < delays.length; index += 1) {
@@ -183,7 +201,7 @@ export function usePaymentCallback() {
         } else {
           lastCheckResult.value = {
             success: false,
-            message: t('paymentCallback.status', { status: local_status })
+            message: getLocalizedStatusMessage(local_status)
           }
         }
       } else {

@@ -5,6 +5,7 @@ import { formatRelativeTime } from "@/utils/timeFormat";
 import { handleAssetUrl } from "@/utils/assetUrl";
 import { NBadge, NAvatar } from "naive-ui";
 import { useI18n } from "vue-i18n";
+import { stripSuggestedReplies } from "@/utils/suggestedReply";
 const props = defineProps<{
   item: MessageItem;
 }>();
@@ -43,13 +44,6 @@ const isSelected = computed(() => {
 // type === 'image_hidden' => 升级 Pro,解锁私密图片
 // type === 'video_hidden' => 升级 Pro,解锁私密视频
 // 如果内容为空，则回退查找上一条非空内容
-const stripSuggestedReplies = (input: string): string => {
-  const text = input ?? "";
-  const firstMarkerIndex = text.indexOf("%%%");
-  if (firstMarkerIndex === -1) return text;
-  return text.slice(0, firstMarkerIndex).replace(/\s+$/, "");
-};
-
 const getMessageSummary = (type: string, content: string): string => {
   if (type === "image") return t("chatItem.messageItemImage");
   if (type === "video") return t("chatItem.messageItemVideo");

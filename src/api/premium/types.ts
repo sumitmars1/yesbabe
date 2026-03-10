@@ -60,7 +60,8 @@ export enum PaymentMethod {
   VNMOMO = 'VNMOMO',
   VNVTPAY = 'VNVTPAY',
   UPI = 'UPI',
-  PIX = 'PIX'
+  PIX = 'PIX',
+  ONLINE = 'ONLINE'
 }
 
 // 创建VIP订单请求参数
@@ -103,7 +104,7 @@ export interface OrderQueryResponse {
   code: number;
   message: string;
   data: {
-    provider_response: {
+    provider_response?: {
       code: number;
       data: {
         isPaid: number;
@@ -116,6 +117,26 @@ export interface OrderQueryResponse {
     amount: number;
     order_type: string;
     created_at: string;
+    currency?: string;
+    completed_at?: string | null;
+    remote_status?: string;
+    remote_status_desc?: string;
+  };
+}
+
+export interface UsOrderQueryResponse {
+  code: number;
+  message: string;
+  data: {
+    order_id: string;
+    local_status: string;
+    remote_status: string;
+    remote_status_desc: string;
+    amount: number;
+    currency: string;
+    order_type: string;
+    created_at: string;
+    completed_at: string | null;
   };
 }
 

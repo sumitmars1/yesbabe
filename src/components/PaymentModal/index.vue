@@ -120,6 +120,8 @@ const renderPaymentLabel = (option: PaymentMethodOption) => {
 
 const selectedPaymentMethod = ref<PaymentMethodOption["value"] | null>(null);
 const isProcessing = ref(false);
+const lastPayClickAt = ref(0);
+const PAY_CLICK_COOLDOWN_MS = 3000;
 
 watchEffect(() => {
   const options = paymentMethods.value;
@@ -142,6 +144,14 @@ const handleCouponSelect = (coupon: ApplicableCoupon | null) => {
 const handlePayment = async () => {
   const method = selectedPaymentMethod.value;
   if (!method) return;
+  if (isProcessing.value) return;
+  const now = Date.now();
+  if (now - lastPayClickAt.value < PAY_CLICK_COOLDOWN_MS) {
+    const message = (window as any).$message;
+    message?.info?.($t("paymentModal.pleaseWait"));
+    return;
+  }
+  lastPayClickAt.value = now;
 
   try {
     isProcessing.value = true;
@@ -234,11 +244,28 @@ const handlePayment = async () => {
       // 跳转到支付页面
       window.location.href = paymentUrl;
     } else {
-      throw new Error('No payment URL received');
+      throw new Error("NO_PAYMENT_URL");
     }
     
   } catch (error) {
-    console.error('Payment initiation failed:', error);
+    const message = (window as any).$message;
+    const backendMessage = (error as any)?.response?.data?.message;
+    if (!backendMessage && message?.error) {
+      const errorCode = String((error as any)?.code || "");
+      const errorMessage = String((error as any)?.message || "");
+      const normalizedMessage = errorMessage.toLowerCase();
+
+      if (errorCode === "ECONNABORTED" || normalizedMessage.includes("timeout")) {
+        message.error($t("paymentModal.timeout"));
+      } else if (normalizedMessage.includes("network error")) {
+        message.error($t("paymentModal.networkError"));
+      } else if (errorMessage === "NO_PAYMENT_URL") {
+        message.error($t("paymentModal.noPaymentUrl"));
+      } else {
+        message.error($t("paymentModal.paymentFailed"));
+      }
+    }
+    console.error("Payment initiation failed:", error);
   } finally {
     isProcessing.value = false;
   }

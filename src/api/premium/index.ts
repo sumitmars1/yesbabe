@@ -12,12 +12,13 @@ import type {
   PaymentOrderResponse,
   OrderQueryResponse,
   BrOrderQueryResponse,
+  UsOrderQueryResponse,
   UnifiedOrderQueryResponse
 } from "./types";
 
 const PAYMENT_BACK_URL = "https://yesbabe.ai";
 
-type PaymentRegion = "vn" | "hi" | "br";
+type PaymentRegion = "vn" | "hi" | "br" | "us";
 
 const isPortugueseLanguage = (language: string) => {
   return String(language).toLowerCase().startsWith("pt");
@@ -27,10 +28,15 @@ const isIndiaPaymentLanguage = (language: string) => {
   return language === "hi-IN";
 };
 
+const isEnglishPaymentLanguage = (language: string) => {
+  return language === "en-US";
+};
+
 const getPaymentRegion = (): PaymentRegion => {
   const language = getCurrentLanguageFromI18n();
   if (isPortugueseLanguage(language)) return "br";
   if (isIndiaPaymentLanguage(language)) return "hi";
+  if (isEnglishPaymentLanguage(language)) return "us";
   return "vn";
 };
 
@@ -38,6 +44,7 @@ const getQueryPaymentRegion = (order_id: string): PaymentRegion => {
   if (order_id.startsWith("VN_")) return "vn";
   if (order_id.startsWith("HI_") || order_id.startsWith("IN_")) return "hi";
   if (order_id.startsWith("BR_")) return "br";
+  if (order_id.startsWith("US_")) return "us";
   return getPaymentRegion();
 };
 
@@ -286,6 +293,27 @@ export const queryOrder = async (order_id: string): Promise<UnifiedOrderQueryRes
     };
   }
 
+  if (region === "us") {
+    const response = await http.request<UsOrderQueryResponse>({
+      method: "get",
+      url: "/pay/us/query",
+      params: { mch_order_id: order_id }
+    });
+
+    return {
+      code: response.code,
+      message: response.message,
+      data: {
+        local_status: response.data.local_status,
+        order_id: response.data.order_id,
+        amount: response.data.amount,
+        order_type: response.data.order_type,
+        created_at: response.data.created_at,
+        currency: response.data.currency
+      }
+    };
+  }
+
   const response = await http.request<OrderQueryResponse>({
     method: "get",
     url: `/pay/${region}/query`,
@@ -304,4 +332,32 @@ export const queryOrder = async (order_id: string): Promise<UnifiedOrderQueryRes
       provider_response: response.data.provider_response
     }
   };
+};
+
+export const syncOrder = async (order_id: string) => {
+  const region = getQueryPaymentRegion(order_id);
+  if (region === "br") {
+    return http.request({
+      method: "post",
+      url: "/pay/br/sync",
+      params: { order_id }
+    });
+  }
+  return http.request({
+    method: "post",
+    url: `/pay/${region}/sync`,
+    params: { mch_order_id: order_id }
+  });
+};
+
+export const cancelOrder = async (order_id: string, cancel_reason: string) => {
+  const region = getQueryPaymentRegion(order_id);
+  if (region === "br") {
+    return Promise.reject(new Error("Cancel is not supported for this payment region"));
+  }
+  return http.request({
+    method: "post",
+    url: `/pay/${region}/cancel`,
+    data: { mch_order_id: order_id, cancel_reason }
+  });
 };

@@ -716,12 +716,26 @@ export default {
     proActivationFailed: 'Falha na ativação Pro',
     refreshUserInfoFailed: 'Falha ao atualizar info do usuário',
     selectPaymentMethod: 'Selecionar método de pagamento',
-    payNow: 'Pagar agora'
+    payNow: 'Pagar agora',
+    pleaseWait: 'Aguarde um momento antes de tentar novamente.',
+    paymentFailed: 'Falha ao iniciar o pagamento. Tente novamente.',
+    networkError: 'Erro de ligação à rede. Verifique a internet e tente novamente.',
+    timeout: 'O pedido excedeu o tempo limite. Tente novamente mais tarde.',
+    noPaymentUrl: 'Não foi possível obter o link de pagamento. Tente novamente mais tarde.'
   },
   paymentCallback: {
     successVip: 'Assinatura VIP concluída!',
     successTokens: 'Recarga de diamantes concluída!',
     pending: 'Pagamento em processamento. Atualizámos a conta; verifique mais tarde.',
+    statusMessages: {
+      completed: 'Pagamento concluído.',
+      pending: 'Pagamento em processamento. Verifique novamente mais tarde.',
+      cancelled: 'Pagamento cancelado.',
+      failed: 'Pagamento falhou. Tente novamente.',
+      amountMismatch: 'A encomenda tem problemas. Contacte o suporte.',
+      benefitFailed: 'Pagamento concluído, mas os benefícios não foram atribuídos. Contacte o suporte.',
+      refunded: 'Pagamento reembolsado.'
+    },
     status: 'Estado da encomenda: {status}',
     queryFailed: 'Falha ao consultar a encomenda'
   },
@@ -743,11 +757,13 @@ export default {
     proBenefits: 'Benefícios de membro Pro',
     monthlyDiamonds: 'Recebe {amount} diamantes por mês (Total {total})',
     voiceCall: 'Fazer chamadas de voz com IA',
-    createAI: 'Cria a tua própria namorada IA',
-    unlimitedChat: 'Chat de texto ilimitado',
+    createAI: 'Crie Sua IA Exclusiva',
+    unlimitedChat: 'Chat de Texto Ilimitado',
     removeImageBlur: 'Remover o desfoque das imagens',
     generateImages: 'Gerar imagens',
     generateVideos: 'Gerar vídeos',
+    generateImagesAndVideos: 'Gerar Imagens e Vídeos em HD',
+    unlockPrivateThemes: 'Desbloquear Coleções de Temas Privados',
     fastResponse: 'Velocidade de resposta ultrarrápida',
     later: 'Talvez mais tarde',
     upgradeNow: 'Atualizar para Pro agora',

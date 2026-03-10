@@ -45,6 +45,14 @@ export const BR_PAYMENT_METHOD_OPTIONS: PaymentMethodOption[] = [
   }
 ]
 
+export const US_PAYMENT_METHOD_OPTIONS: PaymentMethodOption[] = [
+  {
+    label: 'Online Payment',
+    value: PaymentMethod.ONLINE,
+    iconClass: 'payment-ONLINE'
+  }
+]
+
 export type PaymentScene = 'vip' | 'tokens'
 
 export const getPaymentMethodOptions = (
@@ -53,13 +61,14 @@ export const getPaymentMethodOptions = (
 ): PaymentMethodOption[] => {
   if (String(language).toLowerCase().startsWith('pt')) return BR_PAYMENT_METHOD_OPTIONS
   if (language === 'hi-IN') return IN_PAYMENT_METHOD_OPTIONS
+  if (language === 'en-US') return US_PAYMENT_METHOD_OPTIONS
   return VN_PAYMENT_METHOD_OPTIONS
 }
 
 export const getPaymentMethodOption = (
   method: PaymentMethod
 ): PaymentMethodOption | undefined => {
-  return [...VN_PAYMENT_METHOD_OPTIONS, ...IN_PAYMENT_METHOD_OPTIONS, ...BR_PAYMENT_METHOD_OPTIONS].find(
+  return [...VN_PAYMENT_METHOD_OPTIONS, ...IN_PAYMENT_METHOD_OPTIONS, ...BR_PAYMENT_METHOD_OPTIONS, ...US_PAYMENT_METHOD_OPTIONS].find(
     (item) => item.value === method
   )
 }

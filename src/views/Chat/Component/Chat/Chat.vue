@@ -176,6 +176,10 @@ import InfinityScroll from "@/components/InfinityScroll/index.vue";
 import { throttle } from "@/utils/throttle";
 import { showSubscriptionModal } from "@/utils/subscriptionModal";
 import { showDiamondRechargeModal } from "@/utils/diamondRechargeModal";
+import {
+  appendSuggestionPhotoMarker,
+  normalizeSuggestedReplyText,
+} from "@/utils/suggestedReply";
 
 // Stores
 const globalStore = useGlobalStore();
@@ -772,13 +776,40 @@ const handleSendMessage = async () => {
 };
 
 const handleSendSuggestion = async (text: string) => {
-  const normalized = String(text ?? "").trim().replace(/^(?:%{3}\s*)+/, "").trim();
+  const normalized = normalizeSuggestedReplyText(text);
   if (!normalized) return;
+  if (!chatStore.currentChat?.id) return;
   if (isReplying.value) return;
-  selectedFunction.value = { type: null, price: 0 };
-  inputMessage.value = normalized;
-  await nextTick();
-  await handleSendMessage();
+
+  const companionId = chatStore.currentChat?.companion_id;
+  if (!authStore.userInfo?.is_vip && companionId) {
+    if (!hasFreeCountLeft.value) {
+      showSubscriptionModal();
+      return;
+    }
+  }
+
+  const success = await sendMessage(
+    appendSuggestionPhotoMarker(normalized),
+    normalized,
+    false
+  );
+  if (!success) return;
+
+  if (!authStore.userInfo?.is_vip && companionId) {
+    freeChatStore.decrementCount(companionId);
+  }
+
+  scrollState.autoStick = true;
+  scrollState.historySnapshot = null;
+
+  if (globalStore.isMobile) {
+    await handleMessageSent(scrollbarRef);
+  } else {
+    await scrollbarRef.value?.scrollToBottom({
+      smooth: true,
+    });
+  }
 };
 
 /**
