@@ -10,7 +10,7 @@
         <n-carousel-item @click="handleCarouselClick(0)">
           <div class="carousel-item-layout carousel-item-bg w-full h-full cursor-pointer" style="background-color: #FF2E70;">
             <!-- 背景图片 -->
-            <img src="@/assets/banner/create_ai.png" alt="Create AI" class="carousel-bg-image" />
+            <img src="@/assets/p_images/banner1.png" alt="Create AI" class="carousel-bg-image" />
             <!-- 文字 - 居中上方 -->
             <div class="carousel-text-overlay">
               <div class="carousel-title carousel-title-shadow font-semibold text-white leading-[1.4]">{{ getCarouselTitle(0) }}</div>
@@ -42,7 +42,7 @@
         <n-carousel-item @click="handleCarouselClick(2)">
           <div class="carousel-item-layout carousel-item-bg w-full h-full cursor-pointer" style="background-color: #8E50FA;">
             <!-- 背景图片 -->
-            <img src="@/assets/banner/private_theme.png" alt="Private Theme" class="carousel-bg-image" />
+            <img src="@/assets/p_images/banner2.png" alt="Private Theme" class="carousel-bg-image" />
             <!-- 文字 - 居中上方 -->
             <div class="carousel-text-overlay">
               <div class="carousel-title carousel-title-shadow font-semibold text-white leading-[1.4]">{{ getCarouselTitle(2) }}</div>

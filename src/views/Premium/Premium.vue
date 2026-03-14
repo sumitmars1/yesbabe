@@ -56,7 +56,7 @@
           'absolute right-0 top-0': globalStore.isMobile,
         }"
       >
-        <div :class="!globalStore.isMobile ? 'h-420px' : 'h-360px'">
+        <div :class="!globalStore.isMobile ? 'h-400px' : 'h-320px'">
           <img
             class="h-full w-full object-contain"
             :src="PremiumBg"
@@ -152,7 +152,7 @@
 import { ref, onMounted, computed } from 'vue';
 import PriceCard from './PriceCard.vue';
 import { CheckmarkCircleSharp } from '@vicons/ionicons5';
-import PremiumBg from '@/assets/icons/pic/premium_bg.png';
+import PremiumBg from '@/assets/p_images/pay.png';
 import { useGlobalStore } from '@/stores/global/global';
 import { usePremiumStore } from '@/stores/premiumStore';
 import { useAuthStore } from '@/stores/auth';

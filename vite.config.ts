@@ -13,6 +13,8 @@ const agent = new HttpsProxyAgent('http://127.0.0.1:7890')
 export default defineConfig(({ mode }) => {
   // 加载环境变量
   const env = loadEnv(mode, process.cwd(), "");
+  const normalizePath = (value: string) => value.replace(/\\/g, "/");
+  const shouldExcludeDocsPath = (value: string) => normalizePath(value).includes("/src/docs/");
 
   return {
     server: {
@@ -103,6 +105,20 @@ export default defineConfig(({ mode }) => {
       Components({
         resolvers: [NaiveUiResolver()],
       }),
+      {
+        name: "exclude-src-docs-from-dist",
+        apply: "build",
+        generateBundle(_options, bundle) {
+          Object.entries(bundle).forEach(([fileName, output]) => {
+            if (output.type !== "asset") return;
+            const originalFileNames = "originalFileNames" in output ? output.originalFileNames : [];
+            const paths = [fileName, output.name ?? "", ...originalFileNames];
+            if (paths.some(shouldExcludeDocsPath)) {
+              delete bundle[fileName];
+            }
+          });
+        },
+      },
     ],
     resolve: {
       alias: {

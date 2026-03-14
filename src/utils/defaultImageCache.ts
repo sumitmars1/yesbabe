@@ -1,8 +1,4 @@
 // 默认图片缓存服务
-import IMG_2016 from '@/assets/chatImage/IMG_2016.jpg'
-import IMG_2017 from '@/assets/chatImage/IMG_2017.png'
-import IMG_2018 from '@/assets/chatImage/IMG_2018.png'
-import IMG_2019 from '@/assets/chatImage/IMG_2019.png'
 
 const DEFAULT_IMAGES_KEY = 'default_images_cache'
 const DEFAULT_IMAGES_TIMESTAMP_KEY = 'default_images_timestamp'
@@ -12,10 +8,6 @@ const CACHE_EXPIRY = 24 * 60 * 60 * 1000
 
 // 默认图片列表（通过 import 引用）
 const DEFAULT_IMAGE_URLS = [
-  IMG_2016,
-  IMG_2017,
-  IMG_2018,
-  IMG_2019
 ]
 
 export const preloadDefaultImages = async (): Promise<string[]> => {

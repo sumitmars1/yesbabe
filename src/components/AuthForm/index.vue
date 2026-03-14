@@ -588,7 +588,10 @@ defineExpose({
   >
     <n-modal :show="showModal" @update:show="handleClose" :mask-closable="true">
       <n-card
-        class="auth-card"
+        :class="[
+          'auth-card',
+          currentView === 'login' ? 'auth-card-login-desktop' : '',
+        ]"
         role="dialog"
         aria-modal="true"
         :closable="true"
@@ -1090,11 +1093,75 @@ defineExpose({
 <style scoped>
 .auth-card {
   max-width: 400px;
+  position: relative;
 }
 @media (max-width: 440px) {
   .auth-card {
     width: calc(100% - 40px);
     margin: 0 auto;
+  }
+
+  .auth-card-login-desktop {
+    overflow: hidden;
+  }
+
+  .auth-card-login-desktop::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background: url("@/assets/p_images/mobile_login.png") no-repeat center top / contain;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+    filter: saturate(0.8) brightness(1.1);
+  }
+
+  .auth-card-login-desktop :deep(.n-card-header) {
+    position: relative;
+    z-index: 1;
+    align-items: flex-start;
+  }
+
+  .auth-card-login-desktop :deep(.n-card-header__main) {
+    padding-top: 92px;
+  }
+
+  .auth-card-login-desktop :deep(.n-card__content) {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@media (min-width: 441px) {
+  .auth-card-login-desktop {
+    overflow: hidden;
+  }
+
+  .auth-card-login-desktop::after {
+    content: "";
+    position: absolute;
+    left: -72px;
+    top: -20px;
+    width: 260px;
+    height: 780px;
+    background: url("@/assets/p_images/pc_login.png") no-repeat center / contain;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+    filter: saturate(0.8) brightness(1.1);
+  }
+
+  .auth-card-login-desktop :deep(.n-card__content) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .auth-card-login-desktop :deep(.n-card-header) {
+    position: relative;
+    z-index: 1;
   }
 }
 
