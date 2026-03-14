@@ -716,6 +716,8 @@ export default {
     proActivationFailed: 'Proのアクティベーションに失敗しました',
     refreshUserInfoFailed: 'ユーザー情報の更新に失敗しました',
     selectPaymentMethod: '支払い方法を選択',
+    pleaseSelectPaymentMethod: '支払い方法を選択してください。',
+    pleaseSelectOnlyOnePaymentMethod: '支払い方法は1つだけ選択してください。',
     payNow: '今すぐ支払う'
   },
   paymentCallback: {

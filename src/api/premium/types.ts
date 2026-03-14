@@ -61,7 +61,8 @@ export enum PaymentMethod {
   VNVTPAY = 'VNVTPAY',
   UPI = 'UPI',
   PIX = 'PIX',
-  ONLINE = 'ONLINE'
+  ONLINE = 'ONLINE',
+  CARD = 'CARD'
 }
 
 // 创建VIP订单请求参数
@@ -139,6 +140,8 @@ export interface UsOrderQueryResponse {
     completed_at: string | null;
   };
 }
+
+export type HieasyOrderQueryResponse = UsOrderQueryResponse;
 
 // 巴西订单查询响应
 export interface BrOrderQueryResponse {

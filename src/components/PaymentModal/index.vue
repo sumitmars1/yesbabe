@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, h, ref, watchEffect } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import { useThemeStore } from "@/stores/themeStore";
 import { darkTheme } from "naive-ui";
 import BabeButton from "@/components/BabeButton/index.vue";
-import { NSelect } from "naive-ui";
+import { NCheckbox } from "naive-ui";
 import { createVipOrder, createTokenOrder } from "@/api/premium";
 import { useCurrency } from "@/composables/useCurrency";
 import SvgIcon from "@/components/SvgIcon/index.vue";
@@ -76,6 +76,7 @@ const show = (amount: string, title: string = "", description: string = "", vipI
   };
   successCallback = onSuccess || null;
   selectedCoupon.value = null; // 重置优惠券选择
+  selectedPaymentMethod.value = null;
   showModal.value = true;
 };
 
@@ -99,24 +100,9 @@ const paymentMethods = computed(() => {
   return getPaymentMethodOptions(locale.value, paymentScene.value);
 });
 
-const shouldShowPaymentMethodSelect = computed(() => {
-  return locale.value === "hi-IN" || locale.value.toLowerCase().startsWith("pt") || paymentMethods.value.length > 1;
+const shouldShowPaymentMethods = computed(() => {
+  return paymentMethods.value.length > 0;
 });
-
-const renderPaymentLabel = (option: PaymentMethodOption) => {
-  return h(
-    "div",
-    { class: "flex items-center gap-2" },
-    [
-      h(SvgIcon, {
-        iconClass: option.iconClass,
-        size: 18,
-        className: "text-primary",
-      }),
-      h("span", { class: "leading-none" }, option.label),
-    ]
-  );
-};
 
 const selectedPaymentMethod = ref<PaymentMethodOption["value"] | null>(null);
 const isProcessing = ref(false);
@@ -130,8 +116,8 @@ watchEffect(() => {
     return;
   }
 
-  const currentValue = selectedPaymentMethod.value;
-  const exists = currentValue && options.some((item) => item.value === currentValue);
+  const current = selectedPaymentMethod.value;
+  const exists = current && options.some((item) => item.value === current);
   if (!exists) selectedPaymentMethod.value = options[0].value;
 });
 
@@ -143,11 +129,14 @@ const handleCouponSelect = (coupon: ApplicableCoupon | null) => {
 // 处理支付
 const handlePayment = async () => {
   const method = selectedPaymentMethod.value;
-  if (!method) return;
+  const message = (window as any).$message;
+  if (!method) {
+    message?.warning?.($t("paymentModal.pleaseSelectPaymentMethod"));
+    return;
+  }
   if (isProcessing.value) return;
   const now = Date.now();
   if (now - lastPayClickAt.value < PAY_CLICK_COOLDOWN_MS) {
-    const message = (window as any).$message;
     message?.info?.($t("paymentModal.pleaseWait"));
     return;
   }
@@ -321,15 +310,31 @@ defineExpose({
           </div>
           
           <!-- 支付方式选择 -->
-          <div v-if="shouldShowPaymentMethodSelect" class="mb-6 w-full max-w-[240px] mx-auto text-left">
+          <div v-if="shouldShowPaymentMethods" class="mb-6 w-full max-w-[320px] mx-auto text-left">
             <div class="text-sm mb-2 text-secondary">{{ $t('paymentModal.selectPaymentMethod') || 'Select Payment Method' }}</div>
-            <n-select
-              v-model:value="selectedPaymentMethod"
-              :options="paymentMethods"
-              :render-label="renderPaymentLabel"
-              size="large"
-              class="payment-select"
-            />
+            <div class="flex flex-wrap gap-3 justify-center">
+              <div
+                v-for="option in paymentMethods"
+                :key="option.value"
+                class="payment-method-item flex-[1_1_120px] max-w-[220px] px-3 py-2 rounded-3 border border-white/12 bg-white/5 transition-colors cursor-pointer"
+                :class="selectedPaymentMethod === option.value ? 'border-purple-500/60 bg-purple-500/10' : ''"
+                @click="!isProcessing && (selectedPaymentMethod = option.value)"
+              >
+                <div class="flex items-center gap-2">
+                  <n-checkbox
+                    :checked="selectedPaymentMethod === option.value"
+                    :disabled="isProcessing"
+                    @update:checked="(checked) => checked && (selectedPaymentMethod = option.value)"
+                  />
+                  <SvgIcon
+                    :icon-class="option.iconClass"
+                    :size="18"
+                    class="text-primary"
+                  />
+                  <span class="leading-none text-sm font-medium">{{ option.label }}</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- 支付按钮 -->
@@ -337,6 +342,7 @@ defineExpose({
             class="w-full font-bold max-w-[240px] mx-auto"
             variant="primary"
             :loading="isProcessing"
+            :disabled="!selectedPaymentMethod"
             @click="handlePayment"
           >
             {{ $t('paymentModal.payNow') || 'Pay Now' }}
@@ -352,12 +358,8 @@ defineExpose({
   color: white;
 }
 
-:deep(.n-base-selection) {
-  --n-border-radius: 12px !important;
-}
-
-:deep(.n-base-selection-label) {
-  background-color: rgba(255, 255, 255, 0.05) !important;
+:deep(.payment-method-item .n-checkbox__label) {
+  padding: 0;
 }
 
 @media (max-width: 440px) {

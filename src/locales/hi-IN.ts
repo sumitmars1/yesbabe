@@ -716,6 +716,8 @@ export default {
     proActivationFailed: 'प्रो सक्रियण विफल',
     refreshUserInfoFailed: 'उपयोगकर्ता जानकारी ताज़ा करने में विफल',
     selectPaymentMethod: 'भुगतान विधि चुनें',
+    pleaseSelectPaymentMethod: 'कृपया भुगतान विधि चुनें।',
+    pleaseSelectOnlyOnePaymentMethod: 'कृपया केवल एक भुगतान विधि चुनें।',
     payNow: 'अभी भुगतान करें',
     pleaseWait: 'कृपया कुछ क्षण प्रतीक्षा करें और फिर प्रयास करें।',
     paymentFailed: 'भुगतान शुरू करने में विफल। कृपया फिर से प्रयास करें।',

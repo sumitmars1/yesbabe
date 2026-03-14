@@ -716,6 +716,8 @@ export default {
     proActivationFailed: 'Kích hoạt Pro thất bại',
     refreshUserInfoFailed: 'Không thể làm mới thông tin người dùng',
     selectPaymentMethod: 'Chọn phương thức thanh toán',
+    pleaseSelectPaymentMethod: 'Vui lòng chọn phương thức thanh toán.',
+    pleaseSelectOnlyOnePaymentMethod: 'Vui lòng chỉ chọn một phương thức thanh toán.',
     payNow: 'Thanh toán ngay'
   },
   paymentCallback: {

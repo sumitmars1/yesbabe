@@ -718,6 +718,8 @@ export default {
     proActivationFailed: 'Pro开通失败',
     refreshUserInfoFailed: '刷新用户信息失败',
     selectPaymentMethod: '选择支付方式',
+    pleaseSelectPaymentMethod: '请选择支付方式',
+    pleaseSelectOnlyOnePaymentMethod: '请只选择一种支付方式',
     payNow: '立即支付'
   },
   paymentCallback: {

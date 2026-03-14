@@ -47,6 +47,11 @@ export const BR_PAYMENT_METHOD_OPTIONS: PaymentMethodOption[] = [
 
 export const US_PAYMENT_METHOD_OPTIONS: PaymentMethodOption[] = [
   {
+    label: 'Card Payment',
+    value: PaymentMethod.CARD,
+    iconClass: 'payment-CARD'
+  },
+  {
     label: 'Online Payment',
     value: PaymentMethod.ONLINE,
     iconClass: 'payment-ONLINE'

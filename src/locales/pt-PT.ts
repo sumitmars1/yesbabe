@@ -716,6 +716,8 @@ export default {
     proActivationFailed: 'Falha na ativação Pro',
     refreshUserInfoFailed: 'Falha ao atualizar info do usuário',
     selectPaymentMethod: 'Selecionar método de pagamento',
+    pleaseSelectPaymentMethod: 'Selecione um método de pagamento.',
+    pleaseSelectOnlyOnePaymentMethod: 'Selecione apenas um método de pagamento.',
     payNow: 'Pagar agora',
     pleaseWait: 'Aguarde um momento antes de tentar novamente.',
     paymentFailed: 'Falha ao iniciar o pagamento. Tente novamente.',

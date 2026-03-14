@@ -42,6 +42,7 @@ export const getCurrencyByOrderId = (orderId: string): string => {
   if (orderId.startsWith("HI_") || orderId.startsWith("IN_")) return "INR";
   if (orderId.startsWith("BR_")) return "BRL";
   if (orderId.startsWith("US_")) return "USD";
+  if (orderId.startsWith("HE_")) return "USD";
   return getCurrencyByLocale(getCurrentLanguage());
 };
 

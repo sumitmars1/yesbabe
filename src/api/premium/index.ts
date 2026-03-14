@@ -1,6 +1,7 @@
 import http from "@/utils/http";
 import { AxiosPromise } from "axios";
 import { getCurrentLanguage as getCurrentLanguageFromI18n } from "@/utils/i18n";
+import { PaymentMethod } from "./types";
 import type { 
   VipPriceItem,
   VipPriceResponse, 
@@ -13,12 +14,13 @@ import type {
   OrderQueryResponse,
   BrOrderQueryResponse,
   UsOrderQueryResponse,
+  HieasyOrderQueryResponse,
   UnifiedOrderQueryResponse
 } from "./types";
 
 const PAYMENT_BACK_URL = "https://yesbabe.ai";
 
-type PaymentRegion = "vn" | "hi" | "br" | "us";
+type PaymentRegion = "vn" | "hi" | "br" | "us" | "hieasy";
 
 const isPortugueseLanguage = (language: string) => {
   return String(language).toLowerCase().startsWith("pt");
@@ -45,6 +47,7 @@ const getQueryPaymentRegion = (order_id: string): PaymentRegion => {
   if (order_id.startsWith("HI_") || order_id.startsWith("IN_")) return "hi";
   if (order_id.startsWith("BR_")) return "br";
   if (order_id.startsWith("US_")) return "us";
+  if (order_id.startsWith("HE_")) return "hieasy";
   return getPaymentRegion();
 };
 
@@ -233,7 +236,8 @@ export const testAddTokens = (token_id: number): Promise<PurchaseTokenResponse> 
  * @returns Promise<PaymentOrderResponse>
  */
 export const createVipOrder = (data: CreateVipOrderRequest) => {
-  const region = getPaymentRegion();
+  const payMethod = String(data.pay_method || "").toUpperCase();
+  const region: PaymentRegion = payMethod === PaymentMethod.CARD ? "hieasy" : getPaymentRegion();
 
   return http.request<PaymentOrderResponse>({
     method: "post",
@@ -251,7 +255,8 @@ export const createVipOrder = (data: CreateVipOrderRequest) => {
  * @returns Promise<PaymentOrderResponse>
  */
 export const createTokenOrder = (data: CreateTokenOrderRequest) => {
-  const region = getPaymentRegion();
+  const payMethod = String(data.pay_method || "").toUpperCase();
+  const region: PaymentRegion = payMethod === PaymentMethod.CARD ? "hieasy" : getPaymentRegion();
 
   return http.request<PaymentOrderResponse>({
     method: "post",
@@ -314,6 +319,27 @@ export const queryOrder = async (order_id: string): Promise<UnifiedOrderQueryRes
     };
   }
 
+  if (region === "hieasy") {
+    const response = await http.request<HieasyOrderQueryResponse>({
+      method: "get",
+      url: "/pay/hieasy/query",
+      params: { mch_order_id: order_id }
+    });
+
+    return {
+      code: response.code,
+      message: response.message,
+      data: {
+        local_status: response.data.local_status,
+        order_id: response.data.order_id,
+        amount: response.data.amount,
+        order_type: response.data.order_type,
+        created_at: response.data.created_at,
+        currency: response.data.currency
+      }
+    };
+  }
+
   const response = await http.request<OrderQueryResponse>({
     method: "get",
     url: `/pay/${region}/query`,
@@ -329,6 +355,7 @@ export const queryOrder = async (order_id: string): Promise<UnifiedOrderQueryRes
       amount: response.data.amount,
       order_type: response.data.order_type,
       created_at: response.data.created_at,
+      currency: response.data.currency,
       provider_response: response.data.provider_response
     }
   };
@@ -352,7 +379,7 @@ export const syncOrder = async (order_id: string) => {
 
 export const cancelOrder = async (order_id: string, cancel_reason: string) => {
   const region = getQueryPaymentRegion(order_id);
-  if (region === "br") {
+  if (region === "br" || region === "hieasy") {
     return Promise.reject(new Error("Cancel is not supported for this payment region"));
   }
   return http.request({
