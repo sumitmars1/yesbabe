@@ -1,23 +1,17 @@
 <template>
-  <div
-    class="bg-background text-primary mx-auto mx-auto max-w-680px"
-    :class="globalStore.isMobile ? 'page-padding ' : ''"
-  >
-    <div
-      class="flex relative"
-      :class="{
-        'h-280px': globalStore.isMobile,
-        'justify-between h-360px': !globalStore.isMobile,
-      }"
-    >
-      <div
-        class="text-center z-10"
-        :class="{
-          'flex flex-col justify-center': !globalStore.isMobile,
-          '': globalStore.isMobile,
-        }"
-      >
-        <div class="text-sm pt-thirdMargin text-primary text-left">
+  <div class="bg-background text-primary mx-auto mx-auto max-w-680px"
+    :class="globalStore.isMobile ? 'page-padding ' : ''">
+    <div class="flex relative" :class="{
+      'h-280px': globalStore.isMobile,
+      'justify-between h-300px': !globalStore.isMobile,
+    }">
+      <div class="text-center z-10" :class="{
+        'flex flex-col justify-center': !globalStore.isMobile,
+        '': globalStore.isMobile,
+      }">
+        <div class="text-sm pt-thirdMargin text-primary text-left " :class="{
+          'mt-20px': globalStore.isMobile
+        }">
           <div class="mb-2 flex items-center">
             <n-icon size="18" class="mr-1">
               <CheckmarkCircleSharp />
@@ -50,93 +44,51 @@
           </div>
         </div>
       </div>
-      <div
-        :class="{
-          'absolute right-0 top-0 ': !globalStore.isMobile,
-          'absolute right-0 top-0': globalStore.isMobile,
-        }"
-      >
-        <div :class="!globalStore.isMobile ? 'h-400px' : 'h-320px'">
-          <img
-            class="h-full w-full object-contain"
-            :src="PremiumBg"
-            alt="Girl"
-          />
-          <div
-            class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-100"
-          ></div>
+      <div :class="{
+        'absolute right-0 top-0 ': !globalStore.isMobile,
+        'absolute right-0 top-0': globalStore.isMobile,
+      }">
+        <div :class="!globalStore.isMobile ? 'h-400px' : 'h-280px'">
+          <img class="h-full w-full object-contain" :src="PremiumBg" alt="Girl" />
+          <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent opacity-100"></div>
         </div>
       </div>
     </div>
-    <div
-      class="max-w-800px text-center mx-auto"
-      :class="[
-        { 'flex flex-col ': globalStore.isMobile },
-        { 'grid grid-cols-3 gap-3 ': !globalStore.isMobile },
-        globalStore.isMobile ? 'mb-thirdMargin' : 'mb-firstMargin',
-      ]"
-    >
+    <div class="max-w-800px text-center mx-auto " :class="[
+      { 'flex flex-col ': globalStore.isMobile },
+      { 'grid grid-cols-3 gap-3 ': !globalStore.isMobile },
+      globalStore.isMobile ? 'mb-thirdMargin -mt-80px' : 'mb-firstMargin -mt-40px',
+    ]">
       <!-- 价格卡片 -->
       <template v-if="loading && vipPrices.length === 0">
         <!-- 骨架屏 -->
-        <PriceCard
-          v-for="i in 3"
-          :key="`skeleton-${i}`"
-          :id="i"
-          :month="i === 0 ? 1 : i === 1 ? 3 : 12"
-          original-price="0"
-          current-price="0"
-          :is-selected="false"
-          :is-loading="true"
-        />
+        <PriceCard v-for="i in 3" :key="`skeleton-${i}`" :id="i" :month="i === 0 ? 1 : i === 1 ? 3 : 12"
+          original-price="0" current-price="0" :is-selected="false" :is-loading="true" />
       </template>
 
       <!-- 加载中但有缓存数据 -->
       <template v-else-if="loading && vipPrices.length > 0">
-        <PriceCard
-          v-for="(plan, index) in vipPrices"
-          :key="plan.id"
-          :id="plan.id"
-          :month="plan.month"
-          :original-price="plan.original_price"
-          :current-price="plan.current_price"
-          :one-month-price="oneMonthCurrentPrice"
-          :is-selected="selectedPlan === index"
-          :is-loading="true"
-          @select-plan="selectedPlan = index"
-        />
+        <PriceCard v-for="(plan, index) in vipPrices" :key="plan.id" :id="plan.id" :month="plan.month"
+          :original-price="plan.original_price" :current-price="plan.current_price"
+          :one-month-price="oneMonthCurrentPrice" :is-selected="selectedPlan === index" :is-loading="true"
+          @select-plan="selectedPlan = index" />
       </template>
 
       <!-- 已加载完成 -->
       <template v-else>
-        <PriceCard
-          v-for="(plan, index) in vipPrices"
-          :key="plan.id"
-          :id="plan.id"
-          :month="plan.month"
-          :original-price="plan.original_price"
-          :current-price="plan.current_price"
-          :one-month-price="oneMonthCurrentPrice"
-          :is-selected="selectedPlan === index"
-          :is-loading="false"
-          @select-plan="selectedPlan = index"
-        />
+        <PriceCard v-for="(plan, index) in vipPrices" :key="plan.id" :id="plan.id" :month="plan.month"
+          :original-price="plan.original_price" :current-price="plan.current_price"
+          :one-month-price="oneMonthCurrentPrice" :is-selected="selectedPlan === index" :is-loading="false"
+          @select-plan="selectedPlan = index" />
       </template>
     </div>
     <div class="flex flex-col items-center px-6">
-      <BabeButton 
-        class="w-full font-bold max-w-[240px] mb-secondMargin"
-        :loading="paymentLoading"
-        :disabled="loading || vipPrices.length === 0"
-        @click="handleVipPayment"
-      >
+      <BabeButton class="w-full font-bold max-w-[240px] mb-secondMargin" :loading="paymentLoading"
+        :disabled="loading || vipPrices.length === 0" @click="handleVipPayment">
         {{ t('premium.premium.pay') }} {{ currencySymbol }}{{ formatCurrency(selectedVipPrice.current_price) }}
       </BabeButton>
     </div>
-    <div
-      class="text-xs opacity-50"
-      :class="globalStore.isMobile ? 'mb-thirdMargin' : 'mb-firstMargin'"
-    >
+    <div class="text-xs opacity-50" :class="globalStore.isMobile ? 'mb-thirdMargin' : 'mb-firstMargin'">
       <div class="text-center mb-thirdMargin">
         <span class="tips mr-2"> {{ t('premium.premium.noHiddenFees') }}</span>
         <span class="tips"> {{ t('premium.premium.unsubscribe') }} </span>
@@ -197,7 +149,7 @@ const formatMonthlyDiamondsText = (amount: number, total: number) => {
   // 使用占位符替换，避免数字相同时的冲突问题
   const amountPlaceholder = `__AMOUNT_${Date.now()}__`;
   const totalPlaceholder = `__TOTAL_${Date.now()}__`;
-  
+
   return text
     .replace(String(amount), amountPlaceholder)
     .replace(String(total), totalPlaceholder)

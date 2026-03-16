@@ -590,7 +590,7 @@ defineExpose({
       <n-card
         :class="[
           'auth-card',
-          currentView === 'login' ? 'auth-card-login-desktop' : '',
+          currentView === 'login' ? 'auth-card-login' : '',
         ]"
         role="dialog"
         aria-modal="true"
@@ -619,8 +619,18 @@ defineExpose({
 
 
 
-        <div v-if="currentView === 'login'">
-          <n-space vertical size="large">
+        <div v-if="currentView === 'login'" class="login-form-wrap">
+          <!-- <img
+            class="login-deco-image login-deco-image-mobile"
+            src="@/assets/p_images/mobile_login.png"
+            alt="Login"
+          />
+          <img
+            class="login-deco-image login-deco-image-pc"
+            src="@/assets/p_images/pc_login.png"
+            alt="Login"
+          /> -->
+          <n-space vertical size="large" class="login-fields">
             <n-input
               v-model:value="loginEmail"
               type="email"
@@ -1092,76 +1102,71 @@ defineExpose({
 
 <style scoped>
 .auth-card {
-  max-width: 400px;
+  max-width: none;
   position: relative;
 }
+
+.login-form-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-deco-image {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.login-fields {
+  width: 100%;
+}
+
 @media (max-width: 440px) {
   .auth-card {
-    width: calc(100% - 40px);
+    width: calc(100% - 24px);
     margin: 0 auto;
   }
 
-  .auth-card-login-desktop {
-    overflow: hidden;
+  .auth-card-login {
+    margin-top: 0;
   }
 
-  .auth-card-login-desktop::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 120px;
-    background: url("@/assets/p_images/mobile_login.png") no-repeat center top / contain;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.6;
-    filter: saturate(0.8) brightness(1.1);
+  .login-deco-image-mobile {
+    display: block;
+    width: 78%;
+    margin: 0 auto;
+    height: auto;
   }
 
-  .auth-card-login-desktop :deep(.n-card-header) {
-    position: relative;
-    z-index: 1;
-    align-items: flex-start;
-  }
-
-  .auth-card-login-desktop :deep(.n-card-header__main) {
-    padding-top: 92px;
-  }
-
-  .auth-card-login-desktop :deep(.n-card__content) {
-    position: relative;
-    z-index: 1;
+  .login-deco-image-pc {
+    display: none;
   }
 }
 
 @media (min-width: 441px) {
-  .auth-card-login-desktop {
-    overflow: hidden;
+  .auth-card {
+    width: 400px;
   }
 
-  .auth-card-login-desktop::after {
-    content: "";
-    position: absolute;
-    left: -72px;
-    top: -20px;
-    width: 260px;
-    height: 780px;
-    background: url("@/assets/p_images/pc_login.png") no-repeat center / contain;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.6;
-    filter: saturate(0.8) brightness(1.1);
+  .auth-card-login .login-form-wrap {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
   }
 
-  .auth-card-login-desktop :deep(.n-card__content) {
-    position: relative;
-    z-index: 1;
+  .auth-card-login .login-fields {
+    flex: 1;
   }
 
-  .auth-card-login-desktop :deep(.n-card-header) {
-    position: relative;
-    z-index: 1;
+  .login-deco-image-pc {
+    display: block;
+    width: 170px;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .login-deco-image-mobile {
+    display: none;
   }
 }
 
